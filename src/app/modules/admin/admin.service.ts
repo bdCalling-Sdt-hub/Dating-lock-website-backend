@@ -24,6 +24,8 @@ import { IAdmin } from './admin.interface';
 import { hashedPassword } from '../../../helpers/hashPasswordHelper';
 import { sendResetEmail } from '../auth/sendResetMails';
 import { ENUM_USER_ROLE } from '../../../enums/user';
+import sendEmail from '../../../utils/sendEmail';
+import { registrationSuccessEmailBody } from '../../../mails/user.register';
 
 //!
 const registrationUser = async (payload: IRegistration) => {
@@ -39,7 +41,14 @@ const registrationUser = async (payload: IRegistration) => {
     throw new ApiError(400, 'Email already exist');
   }
   const newUser = await Admin.create(payload);
-
+  const data = { user: { name: user.name } };
+  sendEmail({
+    email: user.email,
+    subject: 'Congratulations to register successfully',
+    html: registrationSuccessEmailBody(data),
+  }).catch(error => {
+    console.error('Failed to send email:', error);
+  });
   const { password: omit, ...userWithoutPassword } = newUser.toObject();
 
   return userWithoutPassword;
