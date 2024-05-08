@@ -23,6 +23,7 @@ const UserSchema = new Schema<IUser, UserModel>(
     phone_number: {
       type: String,
       unique: true,
+      sparse: true,
     },
     password: {
       type: String,

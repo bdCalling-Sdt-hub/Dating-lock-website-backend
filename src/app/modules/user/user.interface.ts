@@ -22,9 +22,11 @@ export type IActivationRequest = {
   activation_token: string;
   activation_code: string;
 };
-// type IAboutMe =  {
+export type IReqUser = {
+  userId: string;
+  role: string;
+};
 
-// }
 export type IUser = {
   _id?: string;
   name: string;

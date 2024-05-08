@@ -3,6 +3,7 @@ import { UserRoutes } from '../modules/user/user.routes';
 import { AuthRoutes } from '../modules/auth/auth.routes';
 import { AdminRoutes } from '../modules/admin/admin.routes';
 import { PostRoutes } from '../modules/posts/post.routes';
+import { LockRoutes } from '../modules/lock/lock.routes';
 
 const router = express.Router();
 
@@ -14,6 +15,10 @@ const moduleRoutes = [
   {
     path: '/post',
     route: PostRoutes,
+  },
+  {
+    path: '/lock',
+    route: LockRoutes,
   },
   {
     path: '/admin',
