@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Secret } from 'jsonwebtoken';
 import config from '../../../config';
 import bcrypt from 'bcrypt';
-import { ILoginUser, ILoginUserResponse } from './auth.interface';
 import User from '../user/user.model';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import ApiError from '../../../errors/ApiError';
@@ -11,52 +9,6 @@ import httpStatus from 'http-status';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import Admin from '../admin/admin.model';
 import { sendResetEmail } from './sendResetMails';
-
-const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
-  const { email, password } = payload;
-
-  const isUserExist = await User.isUserExist(email);
-  //@ts-ignore
-  if (isUserExist?.accountStatus === 'lock') {
-    throw new ApiError(
-      400,
-      'Your account is locked! Please contact with ANS Music Help Center',
-    );
-  }
-  const newUser = await User.findOne({ email });
-  if (!isUserExist) {
-    throw new ApiError(404, 'User does not exist');
-  }
-
-  if (
-    isUserExist.password &&
-    !(await User.isPasswordMatched(password, isUserExist.password))
-  ) {
-    throw new ApiError(402, 'Password is incorrect');
-  }
-
-  //create access token & refresh token
-
-  const { _id: userId, role } = isUserExist;
-  const accessToken = jwtHelpers.createToken(
-    { userId, role },
-    config.jwt.secret as Secret,
-    config.jwt.expires_in as string,
-  );
-  //Create refresh token
-  const refreshToken = jwtHelpers.createToken(
-    { userId, role },
-    config.jwt.refresh_secret as Secret,
-    config.jwt.refresh_expires_in as string,
-  );
-
-  return {
-    accessToken,
-    refreshToken,
-    //@ts-ignore
-    userData: newUser,
-  };
-};
 
 //! This is forget password controller
 const forgotPass = async (payload: { email: string }) => {
@@ -125,7 +77,6 @@ const resetPassword = async (
   await User.updateOne({ email }, { password });
 };
 export const AuthService = {
-  loginUser,
   forgotPass,
   resetPassword,
 };

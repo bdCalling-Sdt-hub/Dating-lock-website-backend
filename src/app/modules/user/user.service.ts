@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+import bcrypt from 'bcrypt';
 import ApiError from '../../../errors/ApiError';
 import { IRegistration, IUser } from './user.interface';
 import User from './user.model';
@@ -22,7 +22,10 @@ import { IGenericResponse } from '../../../interfaces/paginations';
 import httpStatus from 'http-status';
 import sendEmail from '../../../utils/sendEmail';
 import { registrationSuccessEmailBody } from '../../../mails/user.register';
+import { ENUM_USER_ROLE } from '../../../enums/user';
+import { sendResetEmail } from '../auth/sendResetMails';
 
+//!
 const registrationUser = async (payload: IRegistration) => {
   const { name, email, password } = payload;
 
@@ -50,6 +53,7 @@ const registrationUser = async (payload: IRegistration) => {
 
   return userWithoutPassword;
 };
+//!
 const createUser = async (userData: IUser): Promise<IUser | null> => {
   const newUser = await User.create(userData);
 
@@ -86,7 +90,6 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
   };
   return updatedResult;
 };
-
 //!
 const updateProfile = async (
   id: string,
@@ -190,7 +193,7 @@ const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
     refreshToken,
   };
 };
-
+//!
 const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   //verify token
   // invalid token - synchronous
@@ -226,7 +229,7 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
     accessToken: newAccessToken,
   };
 };
-
+//!
 const changePassword = async (
   user: JwtPayload | null,
   payload: IChangePassword,
@@ -247,6 +250,70 @@ const changePassword = async (
   isUserExist.password = newPassword;
   isUserExist.save();
 };
+//!
+const forgotPass = async (payload: { email: string }) => {
+  const user = await User.findOne(
+    { email: payload.email },
+    { _id: 1, role: 1 },
+  );
+
+  if (!user) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User does not exist!');
+  }
+
+  let profile = null;
+  if (user.role === ENUM_USER_ROLE.USER) {
+    profile = await User.findOne({ _id: user?._id });
+  }
+
+  if (!profile) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Pofile not found!');
+  }
+
+  if (!profile.email) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email not found!');
+  }
+
+  const passResetToken = await jwtHelpers.createResetToken(
+    { _id: user.id },
+    config.jwt.secret as string,
+    '30m',
+  );
+
+  // const resetLink: string = config.resetlink + `token=${passResetToken}`;
+  const resetLink: string = `${config.resetlink}token=${passResetToken}&email=${profile.email}`;
+  await sendResetEmail(
+    profile.email,
+    `
+      <div>
+        <p>Hi, ${profile.name}</p>
+        <p>Your password reset link: <a href=${resetLink}>Click Here</a></p>
+        <p>Thank you</p>
+      </div>
+  `,
+  );
+};
+//!
+const resetPassword = async (
+  payload: { email: string; newPassword: string },
+  token: string,
+) => {
+  const { email, newPassword } = payload;
+  const user = await User.findOne({ email }, { _id: 1 });
+
+  if (!user) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User not found!');
+  }
+
+  await jwtHelpers.verifyToken(token, config.jwt.secret as string);
+
+  const password = await bcrypt.hash(
+    newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  await User.updateOne({ email }, { password }, { new: true });
+};
 
 export const UserService = {
   createUser,
@@ -258,4 +325,6 @@ export const UserService = {
   refreshToken,
   changePassword,
   updateProfile,
+  forgotPass,
+  resetPassword,
 };

@@ -56,7 +56,6 @@ const getSingleUser = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-
 const deleteUser = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const result = await UserService.deleteUser(id);
@@ -113,7 +112,6 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
     message: 'Password change successfully !',
   });
 });
-
 const updateProfile = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const result = await UserService.updateProfile(id, req);
@@ -122,6 +120,24 @@ const updateProfile = catchAsync(async (req: Request, res: Response) => {
     success: true,
     message: 'Profile update successfully',
     data: result,
+  });
+});
+const forgotPass = catchAsync(async (req: Request, res: Response) => {
+  await UserService.forgotPass(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Check your email!',
+  });
+});
+
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization || '';
+  await UserService.resetPassword(req.body, token);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Account recovered!',
   });
 });
 export const UserController = {
@@ -134,4 +150,6 @@ export const UserController = {
   changePassword,
   refreshToken,
   updateProfile,
+  forgotPass,
+  resetPassword,
 };

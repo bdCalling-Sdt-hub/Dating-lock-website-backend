@@ -11,10 +11,12 @@ router.post('/login', UserController.login);
 router.post('/refresh-token', UserController.refreshToken);
 router.get('/users', auth(ENUM_USER_ROLE.USER), UserController.getAllUsers);
 router.patch(
-  '/change-password/:id',
+  '/change-password',
   auth(ENUM_USER_ROLE.USER),
   UserController.changePassword,
 );
+router.post('/forgot-password', UserController.forgotPass);
+router.post('/reset-password', UserController.resetPassword);
 
 //!IDS Work
 router.get('/profile/:id', UserController.getSingleUser);
