@@ -14,6 +14,14 @@ const UserSchema = new Schema<IUser, UserModel>(
   {
     name: {
       type: String,
+
+      required: true,
+    },
+    user_name: {
+      type: String,
+      unique: true,
+      sparse: true,
+      required: true,
     },
     email: {
       type: String,
@@ -37,6 +45,11 @@ const UserSchema = new Schema<IUser, UserModel>(
       type: String,
       enum: ['ADMIN', 'SUPER_ADMIN', 'USER'],
       default: 'USER',
+    },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'others'],
+      required: true,
     },
     profile_image: {
       type: String,
@@ -86,6 +99,7 @@ const UserSchema = new Schema<IUser, UserModel>(
     },
     date_of_birth: {
       type: Date,
+      required: true,
     },
   },
   {

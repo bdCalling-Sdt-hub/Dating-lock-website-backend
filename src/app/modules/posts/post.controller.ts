@@ -13,13 +13,14 @@ const createPost = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getMyPosts = catchAsync(async (req: Request, res: Response) => {
-  const result = await PostService.getMyPosts(req.user);
+  const result = await PostService.getMyPosts(req.user, req.query);
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: 'Post retrieved successfully',
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
 const singlePost = catchAsync(async (req: Request, res: Response) => {

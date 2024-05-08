@@ -51,7 +51,6 @@ const sendMessage = async (req: Request) => {
     await Promise.all([conversation.save(), newMessage.save()]);
 
     if (conversation) {
-      // const { message } = newMessage;
       //@ts-ignore
       io.to(newMessage.conversationId.toString()).emit(
         'getMessage',

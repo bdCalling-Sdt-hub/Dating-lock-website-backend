@@ -13,7 +13,7 @@ import {
   ILoginUserResponse,
   IRefreshTokenResponse,
 } from '../auth/auth.interface';
-import { IActivationToken, IRegistration, IUser } from '../user/user.interface';
+import { IRegistration, IUser } from '../user/user.interface';
 import User from '../user/user.model';
 import Admin from './admin.model';
 import httpStatus from 'http-status';
@@ -22,7 +22,7 @@ import { IGenericResponse } from '../../../interfaces/paginations';
 import { updateImageUrl } from '../../../utils/url-modifier';
 import { IAdmin } from './admin.interface';
 import { hashedPassword } from '../../../helpers/hashPasswordHelper';
-import { sendEmail } from '../auth/sendResetMails';
+import { sendResetEmail } from '../auth/sendResetMails';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 
 //!
@@ -38,7 +38,7 @@ const registrationUser = async (payload: IRegistration) => {
   if (isEmailExist) {
     throw new ApiError(400, 'Email already exist');
   }
-  const newUser = await Admin.create(user);
+  const newUser = await Admin.create(payload);
 
   const { password: omit, ...userWithoutPassword } = newUser.toObject();
 
@@ -76,7 +76,8 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
   }
   const updatedResult = {
     ...result.toObject(),
-    image: updateImageUrl(result.image).replace(/\\/g, '/'),
+    profile_image: updateImageUrl(result.profile_image).replace(/\\/g, '/'),
+    cover_image: updateImageUrl(result.cover_image).replace(/\\/g, '/'),
   };
   return updatedResult;
 };
@@ -86,7 +87,7 @@ const getAllAdmin = async () => {
     if (result) {
       const updatedResult = {
         ...result,
-        image: updateImageUrl(result.image).replace(/\\/g, '/'),
+        profile_image: updateImageUrl(result.profile_image).replace(/\\/g, '/'),
       };
       return updatedResult;
     }
@@ -105,7 +106,7 @@ const updateAdmin = async (
     const result = await Admin.findOneAndUpdate(
       { _id: id },
       //@ts-ignore
-      { image: files.image[0].path },
+      { profile_image: files.image[0].path },
       {
         new: true,
         runValidators: true,
@@ -244,20 +245,18 @@ const changePassword = async (
 };
 //!
 const forgotPass = async (payload: { email: string }) => {
-  const user = await Admin.findOne(
+  const admin = await Admin.findOne(
     { email: payload.email },
     { _id: 1, role: 1 },
   );
 
-  if (!user) {
+  if (!admin) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Admin does not exist!');
   }
 
   let profile = null;
-  if (user.role === ENUM_USER_ROLE.ADMIN) {
-    profile = await Admin.findOne({ _id: user.id });
-  } else if (user.role === ENUM_USER_ROLE.SUPER_ADMIN) {
-    profile = await Admin.findOne({ _id: user.id });
+  if (admin.role === ENUM_USER_ROLE.ADMIN) {
+    profile = await Admin.findOne({ _id: admin?._id });
   }
 
   if (!profile) {
@@ -268,85 +267,45 @@ const forgotPass = async (payload: { email: string }) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email not found!');
   }
 
-  // const passResetToken = await jwtHelpers.createResetToken(
-  //   { _id: user.id },
-  //   config.jwt.secret as string,
-  //   '50m',
-  // );
-  const activationToken = createActivationToken(user);
-  const activationCode = activationToken.activationCode;
+  const passResetToken = await jwtHelpers.createResetToken(
+    { _id: admin._id },
+    config.jwt.secret as string,
+    '30m',
+  );
 
   // const resetLink: string = config.resetlink + `token=${passResetToken}`;
-  const resetLink: string = `${config.resetlink}token=${activationToken.token}&email=${profile.email}`;
-  await sendEmail(
+  const resetLink: string = `${config.resetlink}token=${passResetToken}&email=${profile.email}`;
+  sendResetEmail(
     profile.email,
     `
       <div>
         <p>Hi, ${profile.name}</p>
-        <p>Reset Code, ${activationCode}</p>
         <p>Your password reset link: <a href=${resetLink}>Click Here</a></p>
         <p>Thank you</p>
       </div>
   `,
   );
-  return {
-    resetToken: activationToken.token,
-    user,
-  };
-};
-//!
-const createActivationToken = (user: IRegistration): IActivationToken => {
-  const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
-
-  const token = jwt.sign(
-    {
-      user,
-      activationCode,
-    },
-    config.activation_secret as Secret,
-    {
-      expiresIn: '5m',
-    },
-  );
-  return { token, activationCode };
 };
 //!
 const resetPassword = async (
-  payload: {
-    email: string;
-    newPassword: string;
-    activation_code: string;
-    activation_token: string;
-  },
+  payload: { email: string; newPassword: string },
   token: string,
 ) => {
-  const { email, newPassword, activation_code, activation_token } = payload;
-  const user = await Admin.findOne({ email }, { _id: 1 });
+  const { email, newPassword } = payload;
+  const admin = await Admin.findOne({ email }, { _id: 1 });
 
-  if (!user) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'User not found!');
+  if (!admin) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'admin not found!');
   }
 
-  // await jwtHelpers.verifyToken(token, config.jwt.secret as string);
-  const newUser: { user: IUser; activationCode: string } = jwt.verify(
-    activation_token,
-    config.activation_secret as string,
-  ) as { user: IUser; activationCode: string };
-  if (newUser.activationCode !== activation_code) {
-    throw new ApiError(400, 'Activation code is not valid');
-  }
-  // const { name, email, password } = newUser.user;
-  const existUser = await Admin.findOne({ email });
-  if (existUser) {
-    throw new ApiError(400, 'Email is already exist');
-  }
+  await jwtHelpers.verifyToken(token, config.jwt.secret as string);
 
   const password = await bcrypt.hash(
     newPassword,
     Number(config.bcrypt_salt_rounds),
   );
 
-  await Admin.updateOne({ email }, { password });
+  await Admin.updateOne({ email }, { password }, { new: true });
 };
 //!
 const myProfile = async (id: string) => {

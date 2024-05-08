@@ -3,7 +3,9 @@ import { Request } from 'express';
 import Post from './post.model';
 import ApiError from '../../../errors/ApiError';
 import { IPost } from './post.interface';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
+//! Add a post
 const createPost = async (req: Request) => {
   const { files } = req;
   const data = req.body.data;
@@ -20,10 +22,27 @@ const createPost = async (req: Request) => {
   });
   return result;
 };
-const getMyPosts = async (payload: any) => {
-  const result = await Post.find({ user: payload?.userId });
-  return result;
+//! Get my posts
+const getMyPosts = async (payload: any, query: Record<string, unknown>) => {
+  const postQuery = new QueryBuilder(
+    Post.find({ user: payload?.userId }),
+    query,
+  )
+    .search(['title'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await postQuery.modelQuery;
+  const meta = await postQuery.countTotal();
+
+  return {
+    meta,
+    data: result,
+  };
 };
+//! Single Post
 const singlePost = async (id: string) => {
   const result = await Post.findById(id);
   if (!result) {
@@ -31,6 +50,7 @@ const singlePost = async (id: string) => {
   }
   return result;
 };
+//! Delete Post
 const deletePost = async (id: string) => {
   const result = await Post.findById(id);
   if (!result) {
@@ -38,7 +58,7 @@ const deletePost = async (id: string) => {
   }
   return await Post.findByIdAndDelete(id);
 };
-
+//! Update post
 const updatePost = async (id: string, req: Request) => {
   const { files } = req;
   const data = req?.body?.data;

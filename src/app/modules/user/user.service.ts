@@ -24,6 +24,7 @@ import sendEmail from '../../../utils/sendEmail';
 import { registrationSuccessEmailBody } from '../../../mails/user.register';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import { sendResetEmail } from '../auth/sendResetMails';
+import { userSearchableField } from './user.constants';
 
 //!
 const registrationUser = async (payload: IRegistration) => {
@@ -36,19 +37,19 @@ const registrationUser = async (payload: IRegistration) => {
   };
   const isEmailExist = await User.findOne({ email }).lean();
   if (isEmailExist) {
-    throw new ApiError(400, 'Email already exist');
+    throw new ApiError(400, 'Email already exists');
   }
-  const newUser = await User.create(user);
+  const newUser = await User.create(payload);
   const data = { user: { name: user.name } };
-  try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Congratulations to register successfully',
-      html: registrationSuccessEmailBody(data),
-    });
-  } catch (error: any) {
-    throw new ApiError(500, `${error.message}`);
-  }
+
+  sendEmail({
+    email: user.email,
+    subject: 'Congratulations to register successfully',
+    html: registrationSuccessEmailBody(data),
+  }).catch(error => {
+    console.error('Failed to send email:', error);
+  });
+
   const { password: omit, ...userWithoutPassword } = newUser.toObject();
 
   return userWithoutPassword;
@@ -64,7 +65,7 @@ const getAllUsers = async (
   query: Record<string, unknown>,
 ): Promise<IGenericResponse<IUser[]>> => {
   const userQuery = new QueryBuilder(User.find(), query)
-    .search(['name', 'email'])
+    .search(userSearchableField)
     .filter()
     .sort()
     .paginate()
@@ -275,14 +276,14 @@ const forgotPass = async (payload: { email: string }) => {
   }
 
   const passResetToken = await jwtHelpers.createResetToken(
-    { _id: user.id },
+    { _id: user._id },
     config.jwt.secret as string,
     '30m',
   );
 
   // const resetLink: string = config.resetlink + `token=${passResetToken}`;
   const resetLink: string = `${config.resetlink}token=${passResetToken}&email=${profile.email}`;
-  await sendResetEmail(
+  sendResetEmail(
     profile.email,
     `
       <div>

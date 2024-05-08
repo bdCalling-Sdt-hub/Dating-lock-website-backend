@@ -21,7 +21,6 @@ const registrationUser: RequestHandler = catchAsync(
     });
   },
 );
-
 const createUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const { ...userData } = req.body;
@@ -83,7 +82,6 @@ const login = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-
 const refreshToken = catchAsync(async (req: Request, res: Response) => {
   const { refreshToken } = req.cookies;
   const result = await UserService.refreshToken(refreshToken);

@@ -7,8 +7,8 @@ export type IAdmin = {
   email: string;
   phoneNumber: string;
   password: string;
-  role: 'admin' | 'super-admin';
-  image: string;
+  role: 'ADMIN' | 'SUPER_ADMIN';
+  profile_image: string;
   dateOfBirth: Date;
   location: string;
 };

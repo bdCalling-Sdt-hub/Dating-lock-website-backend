@@ -29,14 +29,14 @@ const AdminSchema = new Schema<IAdmin, AdminModel>(
     dateOfBirth: {
       type: Date,
     },
-    image: {
+    profile_image: {
       type: String,
     },
 
     role: {
       type: String,
-      enum: ['admin', 'super-admin'],
-      default: 'admin',
+      enum: ['ADMIN', 'SUPER_ADMIN'],
+      default: 'ADMIN',
     },
   },
   {

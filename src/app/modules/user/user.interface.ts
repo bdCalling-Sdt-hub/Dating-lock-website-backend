@@ -30,6 +30,7 @@ export type IReqUser = {
 export type IUser = {
   _id?: string;
   name: string;
+  user_name: string;
   email: string;
   phone_number: string;
   password: string;
@@ -53,6 +54,7 @@ export type IUser = {
   body_type: string;
   eyes: string;
   looking_for: string;
+  gender: 'male' | 'female' | 'others';
 };
 export type UserModel = {
   isUserExist(

@@ -1,8 +1,13 @@
+import { SortOrder } from 'mongoose';
 import ApiError from '../../../errors/ApiError';
+import { paginationHelpers } from '../../../helpers/paginationHelper';
+import { IPaginationOptions } from '../../../interfaces/paginations';
 import { IReqUser } from '../user/user.interface';
+import User from '../user/user.model';
 import { ILockRequest } from './lock.interface';
 import { Lock } from './lock.model';
 
+//! add lock request
 const requestLock = async (user: any, payload: ILockRequest) => {
   const data = {
     fromUser: user?.userId,
@@ -28,6 +33,7 @@ const requestLock = async (user: any, payload: ILockRequest) => {
     return populatedLock;
   }
 };
+//! my pending request
 const myPendingLock = async (user: IReqUser) => {
   const result = await Lock.find({
     $and: [{ status: 'pending' }, { toUser: user.userId }],
@@ -43,6 +49,7 @@ const myPendingLock = async (user: IReqUser) => {
   ]);
   return result;
 };
+//! that is sent request to user
 const myRequestedLock = async (user: IReqUser) => {
   const result = await Lock.find({
     $and: [{ status: 'pending' }, { fromUser: user.userId }],
@@ -58,6 +65,7 @@ const myRequestedLock = async (user: IReqUser) => {
   ]);
   return result;
 };
+//! lock accept controller
 const acceptLock = async (user: IReqUser, payload: ILockRequest) => {
   const { fromUser, response } = payload;
 
@@ -86,6 +94,7 @@ const acceptLock = async (user: IReqUser, payload: ILockRequest) => {
   await friendRequest.save();
   return friendRequest;
 };
+//! lock reject controller
 const rejectLock = async (user: IReqUser, payload: ILockRequest) => {
   const { fromUser, response } = payload;
 
@@ -113,18 +122,86 @@ const rejectLock = async (user: IReqUser, payload: ILockRequest) => {
   friendRequest.status = response;
   await friendRequest.save();
 };
-const myLockList = async (user: IReqUser) => {
-  const result = await Lock.find({
+//! my friend list
+const myLockList = async (
+  user: IReqUser,
+  filters: any,
+  paginationOptions: IPaginationOptions,
+) => {
+  const { searchTerm, ...filtersData } = filters;
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginationHelpers.calculatePagination(paginationOptions);
+  const andConditions: any[] = [];
+  if (searchTerm) {
+    const fuzzySearchRegex = new RegExp([...searchTerm].join('.*'), 'i');
+
+    andConditions.push({
+      $or: [
+        ...['name'].map(field => ({
+          [field]: {
+            $regex: fuzzySearchRegex,
+          },
+        })),
+        {
+          fromUser: {
+            $in: await User.find({
+              $or: [{ name: { $regex: fuzzySearchRegex } }],
+            }).distinct('_id'),
+          },
+        },
+      ],
+    });
+  }
+  if (Object.keys(filtersData).length) {
+    andConditions.push({
+      $and: Object.entries(filtersData).map(([field, value]) => ({
+        [field]: value,
+      })),
+    });
+  }
+  andConditions.push({
     $or: [
       { toUser: user.userId, status: 'accepted' },
       { fromUser: user.userId, status: 'accepted' },
     ],
-  }).populate({
-    path: 'fromUser',
-    select: 'name',
   });
-  return result;
+  const sortConditions: { [key: string]: SortOrder } = {};
+
+  if (sortBy && sortOrder) {
+    sortConditions[sortBy] = sortOrder;
+  }
+  const whereConditions =
+    andConditions.length > 0 ? { $and: andConditions } : {};
+
+  const result = await Lock.find(whereConditions)
+    .populate([
+      {
+        path: 'fromUser',
+        select: 'name',
+      },
+      {
+        path: 'toUser',
+        select: 'name',
+      },
+    ])
+    .sort(sortConditions)
+    .skip(skip)
+    .limit(limit);
+  const total = await Lock.countDocuments(whereConditions);
+  // calculate the page
+  const totalPage = Math.ceil(total / limit);
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+      totalPage,
+    },
+    data: result,
+  };
 };
+//! delete lock from my friend list
 const deleteLock = async (id: string) => {
   const isExists = await Lock.findById(id);
   if (!isExists) {

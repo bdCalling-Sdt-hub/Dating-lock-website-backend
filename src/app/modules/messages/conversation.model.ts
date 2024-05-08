@@ -14,7 +14,6 @@ const conversationSchema = new mongoose.Schema(
     },
     groupName: {
       type: String,
-      // default: null,
     },
     messages: [
       {

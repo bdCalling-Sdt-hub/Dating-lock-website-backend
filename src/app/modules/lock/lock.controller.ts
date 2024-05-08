@@ -3,6 +3,8 @@ import catchAsync from '../../../shared/catchasync';
 import { LockService } from './lock.service';
 import sendResponse from '../../../shared/sendResponse';
 import { IReqUser } from '../user/user.interface';
+import paginationFields from '../../../constants/pagination';
+import pick from '../../../shared/pick';
 
 const requestLock = catchAsync(async (req: Request, res: Response) => {
   const result = await LockService.requestLock(req.user, req.body);
@@ -31,13 +33,32 @@ const rejectLock = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+//!
+// const myLockList = catchAsync(async (req: Request, res: Response) => {
+//   const result = await LockService.myLockList(req.user as IReqUser, req.query);
+//   sendResponse(res, {
+//     statusCode: 200,
+//     success: true,
+//     message: 'Lock Request Successful',
+//     data: result.data,
+//     meta: result.meta,
+//   });
+// });
+//!
 const myLockList = catchAsync(async (req: Request, res: Response) => {
-  const result = await LockService.myLockList(req.user as IReqUser);
+  const filters = pick(req.query, ['searchTerm', 'status']);
+  const paginationOptions = pick(req.query, paginationFields);
+  const result = await LockService.myLockList(
+    req.user as IReqUser,
+    filters,
+    paginationOptions,
+  );
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: 'Lock Request Successful',
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
 const myPendingLock = catchAsync(async (req: Request, res: Response) => {
