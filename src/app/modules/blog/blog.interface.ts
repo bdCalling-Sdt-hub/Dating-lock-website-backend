@@ -6,4 +6,6 @@ export type IBlog = {
   description: string;
   image: string;
   created_by: Types.ObjectId | IAdmin;
+  likes: [];
+  comments: [];
 };
