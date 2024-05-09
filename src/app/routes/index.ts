@@ -9,6 +9,7 @@ import { ManageRoutes } from '../modules/manage-web/manage.routes';
 import { EventRoutes } from '../modules/events/events.routes';
 import { SubscriptionRoutes } from '../modules/subscriptions/subscriptions.routes';
 import { ReviewRoutes } from '../modules/reviews/reviews.routes';
+import { subscribeRoutes } from '../modules/subscribe/subscribe.routes';
 
 const router = express.Router();
 
@@ -48,6 +49,10 @@ const moduleRoutes = [
   {
     path: '/review',
     route: ReviewRoutes,
+  },
+  {
+    path: '/subscribe',
+    route: subscribeRoutes,
   },
   {
     path: '/auth',

@@ -126,6 +126,59 @@ const updateEvent = async (id: string, req: Request) => {
     return result;
   }
 };
+//!
+const joinEvents = async (req: Request) => {
+  const { eventId } = req.body;
+
+  const { userId } = req.user as IReqUser;
+
+  const eventPost = await Event.findById(eventId);
+
+  if (!eventPost) {
+    throw new ApiError(404, 'Event not found');
+  }
+
+  // Check if the user has already joined the post
+  const alreadyLiked = eventPost.participants.some(
+    //@ts-ignore
+    participant => participant.user.toString() === userId,
+  );
+
+  if (alreadyLiked) {
+    throw new ApiError(400, 'You have already joined this event');
+  }
+
+  //@ts-ignore
+  eventPost.participants.push({ user: userId });
+  await eventPost.save();
+
+  return eventPost;
+};
+//!
+const removeFromEvent = async (req: Request) => {
+  const { eventId, userId } = req.params;
+
+  const eventPost = await Event.findById(eventId);
+
+  if (!eventPost) {
+    throw new ApiError(404, 'Event post not found');
+  }
+
+  // Find the index of the like in the likes
+  const likeIndex = eventPost.participants.findIndex(
+    //@ts-ignore
+    user => user.user.toString() === userId,
+  );
+
+  if (likeIndex === -1) {
+    throw new ApiError(404, 'Like not found');
+  }
+
+  // Remove the like from the array
+  eventPost.participants.splice(likeIndex, 1);
+  await eventPost.save();
+  return eventPost;
+};
 
 export const EventService = {
   addEvent,
@@ -133,4 +186,6 @@ export const EventService = {
   getSingleEvent,
   deleteEvent,
   updateEvent,
+  joinEvents,
+  removeFromEvent,
 };

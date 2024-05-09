@@ -54,6 +54,26 @@ const deleteEvent = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const joinEvents = catchAsync(async (req: Request, res: Response) => {
+  const result = await EventService.joinEvents(req);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Joined successful',
+    data: result,
+  });
+});
+const removeFromEvent = catchAsync(async (req: Request, res: Response) => {
+  const result = await EventService.removeFromEvent(req);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Joined successful',
+    data: result,
+  });
+});
 
 export const EventController = {
   addEvent,
@@ -61,4 +81,6 @@ export const EventController = {
   getSingleEvent,
   deleteEvent,
   updateEvent,
+  joinEvents,
+  removeFromEvent,
 };

@@ -10,6 +10,7 @@ router.post(
   uploadFile(),
   EventController.addEvent,
 );
+router.post('/join', auth(ENUM_USER_ROLE.USER), EventController.joinEvents);
 router.get(
   '/all-events',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
@@ -29,5 +30,10 @@ router.delete(
   '/delete/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   EventController.deleteEvent,
+);
+router.delete(
+  '/remove-user/:eventId/:userId',
+  auth(ENUM_USER_ROLE.ADMIN),
+  EventController.removeFromEvent,
 );
 export const EventRoutes = router;
