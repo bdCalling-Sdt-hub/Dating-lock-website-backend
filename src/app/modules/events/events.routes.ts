@@ -15,4 +15,19 @@ router.get(
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   EventController.getEvents,
 );
+router.get(
+  '/single/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
+  EventController.getSingleEvent,
+);
+router.patch(
+  '/edit/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  EventController.updateEvent,
+);
+router.delete(
+  '/delete/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  EventController.deleteEvent,
+);
 export const EventRoutes = router;

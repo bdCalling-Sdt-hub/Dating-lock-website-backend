@@ -24,8 +24,41 @@ const getEvents = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getSingleEvent = catchAsync(async (req: Request, res: Response) => {
+  const result = await EventService.getSingleEvent(req.params.id);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Event retrieved successful',
+    data: result,
+  });
+});
+const updateEvent = catchAsync(async (req: Request, res: Response) => {
+  const result = await EventService.updateEvent(req.params.id, req);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Event update successful',
+    data: result,
+  });
+});
+const deleteEvent = catchAsync(async (req: Request, res: Response) => {
+  const result = await EventService.deleteEvent(req.params.id);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Event delete successful',
+    data: result,
+  });
+});
 
 export const EventController = {
   addEvent,
   getEvents,
+  getSingleEvent,
+  deleteEvent,
+  updateEvent,
 };
