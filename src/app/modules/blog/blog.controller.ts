@@ -15,13 +15,14 @@ const addBlog = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getBlogs = catchAsync(async (req: Request, res: Response) => {
-  const result = await BlogService.getBlogs();
+  const result = await BlogService.getBlogs(req.query);
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: 'Blog retrieved successful',
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
 const getSingleBlog = catchAsync(async (req: Request, res: Response) => {

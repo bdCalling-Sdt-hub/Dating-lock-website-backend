@@ -4,6 +4,7 @@ import { IReqUser } from '../user/user.interface';
 import Blog from './blog.model';
 import ApiError from '../../../errors/ApiError';
 import { IBlog } from './blog.interface';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 //!
 const addBlog = async (user: IReqUser, req: Request) => {
@@ -19,8 +20,21 @@ const addBlog = async (user: IReqUser, req: Request) => {
   return await Blog.create(data);
 };
 //!
-const getBlogs = async () => {
-  return await Blog.find();
+const getBlogs = async (query: Record<string, unknown>) => {
+  const postQuery = new QueryBuilder(Blog.find({}), query)
+    .search(['title', 'description'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await postQuery.modelQuery;
+  const meta = await postQuery.countTotal();
+
+  return {
+    meta,
+    data: result,
+  };
 };
 //!
 const getSingleBlog = async (id: string) => {

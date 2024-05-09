@@ -4,6 +4,7 @@ import Post from './post.model';
 import ApiError from '../../../errors/ApiError';
 import { IPost } from './post.interface';
 import QueryBuilder from '../../../builder/QueryBuilder';
+import { IReqUser } from '../user/user.interface';
 
 //! Add a post
 const createPost = async (req: Request) => {
@@ -23,11 +24,8 @@ const createPost = async (req: Request) => {
   return result;
 };
 //! Get my posts
-const getMyPosts = async (payload: any, query: Record<string, unknown>) => {
-  const postQuery = new QueryBuilder(
-    Post.find({ user: payload?.userId }),
-    query,
-  )
+const getMyPosts = async (user: IReqUser, query: Record<string, unknown>) => {
+  const postQuery = new QueryBuilder(Post.find({ user: user?.userId }), query)
     .search(['title'])
     .filter()
     .sort()
