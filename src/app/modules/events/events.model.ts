@@ -36,8 +36,29 @@ const eventSchema = new Schema<IEvent>(
       type: String,
       required: true,
     },
+    start_date: {
+      type: Date,
+      required: true,
+    },
+    end_date: {
+      type: Date,
+      required: true,
+    },
+    event_type: {
+      type: String,
+      enum: ['onsite', 'online'],
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
     participants: [participantSchema],
-    time_slots: [String],
+    time_slots: [{ type: String }],
   },
   {
     timestamps: true,

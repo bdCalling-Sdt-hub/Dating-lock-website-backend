@@ -7,6 +7,8 @@ import { LockRoutes } from '../modules/lock/lock.routes';
 import { BlogRoutes } from '../modules/blog/blog.routes';
 import { ManageRoutes } from '../modules/manage-web/manage.routes';
 import { EventRoutes } from '../modules/events/events.routes';
+import { SubscriptionRoutes } from '../modules/subscriptions/subscriptions.routes';
+import { ReviewRoutes } from '../modules/reviews/reviews.routes';
 
 const router = express.Router();
 
@@ -38,6 +40,14 @@ const moduleRoutes = [
   {
     path: '/event',
     route: EventRoutes,
+  },
+  {
+    path: '/subscriptions',
+    route: SubscriptionRoutes,
+  },
+  {
+    path: '/review',
+    route: ReviewRoutes,
   },
   {
     path: '/auth',
