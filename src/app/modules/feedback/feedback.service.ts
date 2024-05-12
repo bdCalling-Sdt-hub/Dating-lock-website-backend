@@ -3,6 +3,8 @@ import { Request } from 'express';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { FeedBack } from './feedback.model';
 import ApiError from '../../../errors/ApiError';
+import sendEmail from '../../../utils/sendEmail';
+import { feedbackReplyEmailBody } from './feedback.email-template';
 
 const sendFeedBack = async (payload: any) => {
   const { name, email, topic } = payload;
@@ -38,14 +40,23 @@ const addReplyToFeedback = async (req: Request) => {
   const { text } = req.body;
 
   const feedback = await FeedBack.findById(id);
-
+  console.log(feedback);
   if (!feedback) {
     throw new ApiError(404, 'Feedback not found');
   }
   //@ts-ignore
   feedback.reply = { text, status: 'replied' };
   await feedback.save();
+  const data = { user: { name: feedback.name }, text };
 
+  sendEmail({
+    email: feedback?.email,
+    subject: 'Feedback Reply',
+    html: feedbackReplyEmailBody(data),
+  }).catch(error => {
+    console.error('Failed to send email:', error);
+    throw new Error(error?.message);
+  });
   return feedback;
 };
 
