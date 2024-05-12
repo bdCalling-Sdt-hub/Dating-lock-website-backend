@@ -1,13 +1,18 @@
-import { Types } from 'mongoose';
+import { Schema, Types } from 'mongoose';
+import { IPayment } from '../payment/payment.interface';
 
-export type ISubscriptions = {
-  title: string;
-  items: [];
-  price: number;
-  status: boolean;
-};
-export type ISubscriptionsItem = {
-  subscriptions_id: Types.ObjectId | ISubscriptions;
-  title: string;
-  status: boolean;
+type SubscriptionStatus = 'paid' | 'unpaid' | 'trail';
+type SubscriptionPlan = 'free' | 'basic' | 'gold' | 'premium';
+type SubscriptionState = 'active' | 'inactive';
+
+export type ISubscription = {
+  user_id: Schema.Types.ObjectId;
+  plan_id: Schema.Types.ObjectId;
+  startDate: Date;
+  endDate: Date;
+  payment_status: SubscriptionStatus;
+  plan_type: SubscriptionPlan;
+  status: SubscriptionState;
+  trasactionId?: string;
+  payment_id: Types.ObjectId | IPayment;
 };

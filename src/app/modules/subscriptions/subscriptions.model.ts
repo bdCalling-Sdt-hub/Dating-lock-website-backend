@@ -1,65 +1,53 @@
 import { Schema, model } from 'mongoose';
-import { ISubscriptions, ISubscriptionsItem } from './subscriptions.interface';
+import { ISubscription } from './subscriptions.interface';
 
-const subscriptionsSchema = new Schema<ISubscriptions>(
+const subscriptionSchema = new Schema<ISubscription>(
   {
-    title: {
-      type: String,
-      required: true,
-    },
-    items: [
-      {
-        title: {
-          type: String,
-        },
-      },
-    ],
-    price: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    status: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  {
-    timestamps: true,
-    toJSON: {
-      virtuals: true,
-    },
-  },
-);
-
-const subscriptionItemSchema = new Schema<ISubscriptionsItem>(
-  {
-    subscriptions_id: {
+    user_id: {
       type: Schema.Types.ObjectId,
-      ref: 'Subscription',
+      ref: 'User',
       required: true,
     },
-    title: {
+    plan_id: {
+      type: Schema.Types.ObjectId,
+      ref: 'SubscriptionPlan',
+      required: true,
+    },
+    payment_id: {
+      type: Schema.Types.ObjectId,
+      ref: 'Payment',
+      required: true,
+    },
+    startDate: {
+      type: Date,
+      required: true,
+    },
+    endDate: {
+      type: Date,
+      required: true,
+    },
+    payment_status: {
       type: String,
       required: true,
+      enum: ['paid', 'unpaid', 'trail'],
+      default: 'unpaid',
+    },
+    plan_type: {
+      type: String,
+      enum: ['free', 'basic', 'gold', 'premium'],
+      default: 'free',
     },
     status: {
-      type: Boolean,
-      default: true,
+      type: String,
+      required: true,
+      enum: ['active', 'inactive'],
+      default: 'inactive',
     },
+    trasactionId: { type: String, required: false },
   },
   {
     timestamps: true,
-    toJSON: {
-      virtuals: true,
-    },
   },
 );
-export const Subscriptions = model<ISubscriptions>(
-  'Subscription',
-  subscriptionsSchema,
-);
-export const SubscriptionsItem = model<ISubscriptionsItem>(
-  'SubscriptionsItem',
-  subscriptionItemSchema,
-);
+
+export const Subscription = model('Subscription', subscriptionSchema);

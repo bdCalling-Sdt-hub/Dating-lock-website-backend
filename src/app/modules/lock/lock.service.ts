@@ -35,7 +35,7 @@ const requestLock = async (user: any, payload: ILockRequest) => {
     $and: [{ fromUser: user.userId }],
   });
 
-  if (myTotalLock?.length >= getRequestLimit(sender.subscriptionPlan)) {
+  if (myTotalLock?.length >= getRequestLimit(sender.plan_type)) {
     throw new ApiError(400, 'Request limit reached. Please upgrade your plan');
   }
   if (!isExistLock) {

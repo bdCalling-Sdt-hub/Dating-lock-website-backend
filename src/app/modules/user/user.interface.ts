@@ -55,7 +55,7 @@ export type IUser = {
   eyes: string;
   looking_for: string;
   gender: 'male' | 'female' | 'others';
-  subscriptionPlan: string;
+  plan_type: 'free' | 'basic' | 'gold' | 'premium';
 };
 export type UserModel = {
   isUserExist(

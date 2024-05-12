@@ -6,6 +6,7 @@ import { NotFoundHandler } from './errors/NotFoundHandler';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
+
 export const app: Application = express();
 //
 app.use(helmet());

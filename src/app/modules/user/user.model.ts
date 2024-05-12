@@ -101,7 +101,7 @@ const UserSchema = new Schema<IUser, UserModel>(
       type: Date,
       required: true,
     },
-    subscriptionPlan: {
+    plan_type: {
       type: String,
       enum: ['free', 'basic', 'gold', 'premium'],
       default: 'free',
