@@ -3,6 +3,7 @@ import ApiError from '../../../errors/ApiError';
 import { ISubscriptions, ISubscriptionsItem } from './subscriptions.interface';
 import { Subscriptions } from './subscriptions.model';
 
+//! Admin Management Start
 const addSubscription = async (payload: ISubscriptions) => {
   const checkIsExist = await Subscriptions.find({ title: payload.title });
   if (checkIsExist) {
@@ -71,6 +72,10 @@ const deleteSubscriptions = async (id: string) => {
   }
   return await Subscriptions.findByIdAndDelete(id);
 };
+//! Admin Management End
+
+//! Buy Subscription Plan for user
+// const buySubscriptionPlan = async (params: type) => {};
 
 export const SubscriptionsService = {
   addSubscription,

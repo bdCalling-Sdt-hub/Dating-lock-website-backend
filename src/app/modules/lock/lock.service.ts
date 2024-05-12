@@ -6,6 +6,7 @@ import { IReqUser } from '../user/user.interface';
 import User from '../user/user.model';
 import { ILockRequest } from './lock.interface';
 import { Lock } from './lock.model';
+import { getRequestLimit } from '../../../utils/Subscription';
 
 //! add lock request
 const requestLock = async (user: any, payload: ILockRequest) => {
@@ -13,6 +14,12 @@ const requestLock = async (user: any, payload: ILockRequest) => {
     fromUser: user?.userId,
     toUser: payload?.toUser,
   };
+  // Fetch the sender user from the database
+  const sender = await User.findById(user?.userId);
+  if (!sender) {
+    throw new ApiError(404, 'Sender user not found');
+  }
+
   const isExistLock = await Lock.findOne({
     $and: [{ fromUser: data.fromUser }, { toUser: data.toUser }],
   }).populate({
@@ -21,7 +28,15 @@ const requestLock = async (user: any, payload: ILockRequest) => {
   });
 
   if (isExistLock) {
-    throw new ApiError(400, 'They are already friends');
+    throw new ApiError(400, 'Already requested');
+    // throw new ApiError(400, 'They are already friends');
+  }
+  const myTotalLock = await Lock.find({
+    $and: [{ fromUser: user.userId }],
+  });
+
+  if (myTotalLock?.length >= getRequestLimit(sender.subscriptionPlan)) {
+    throw new ApiError(400, 'Request limit reached. Please upgrade your plan');
   }
   if (!isExistLock) {
     const createdLock = await Lock.create(data);
