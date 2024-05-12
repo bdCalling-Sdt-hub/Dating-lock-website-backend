@@ -315,6 +315,25 @@ const resetPassword = async (
 
   await User.updateOne({ email }, { password }, { new: true });
 };
+//!
+const userBaseOnGender = async () => {
+  const maleUsers = await User.find({ gender: 'male' });
+  const totalMale = await User.countDocuments(maleUsers);
+
+  const femaleUsers = await User.find({ gender: 'female' });
+  const totalFemale = await User.countDocuments(femaleUsers);
+
+  return {
+    male: {
+      maleUsers,
+      totalMale,
+    },
+    female: {
+      femaleUsers,
+      totalFemale,
+    },
+  };
+};
 
 export const UserService = {
   createUser,
@@ -328,4 +347,5 @@ export const UserService = {
   updateProfile,
   forgotPass,
   resetPassword,
+  userBaseOnGender,
 };

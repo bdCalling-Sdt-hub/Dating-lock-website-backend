@@ -10,6 +10,11 @@ router.post('/register', UserController.registrationUser);
 router.post('/login', UserController.login);
 router.post('/refresh-token', UserController.refreshToken);
 router.get('/users', auth(ENUM_USER_ROLE.USER), UserController.getAllUsers);
+router.get(
+  '/role-base',
+  auth(ENUM_USER_ROLE.USER),
+  UserController.userBaseOnGender,
+);
 router.patch(
   '/change-password',
   auth(ENUM_USER_ROLE.USER),

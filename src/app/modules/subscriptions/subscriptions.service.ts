@@ -4,6 +4,10 @@ import { ISubscriptions, ISubscriptionsItem } from './subscriptions.interface';
 import { Subscriptions } from './subscriptions.model';
 
 const addSubscription = async (payload: ISubscriptions) => {
+  const checkIsExist = await Subscriptions.find({ title: payload.title });
+  if (checkIsExist) {
+    throw new ApiError(404, 'Subscription already exist');
+  }
   const result = await Subscriptions.create(payload);
   return result;
 };

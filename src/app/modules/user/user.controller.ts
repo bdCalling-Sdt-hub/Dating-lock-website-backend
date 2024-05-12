@@ -128,7 +128,6 @@ const forgotPass = catchAsync(async (req: Request, res: Response) => {
     message: 'Check your email!',
   });
 });
-
 const resetPassword = catchAsync(async (req: Request, res: Response) => {
   const token = req.headers.authorization || '';
   await UserService.resetPassword(req.body, token);
@@ -136,6 +135,15 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
     statusCode: 200,
     success: true,
     message: 'Account recovered!',
+  });
+});
+const userBaseOnGender = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.userBaseOnGender();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'User retrieved successful!',
+    data: result,
   });
 });
 export const UserController = {
@@ -150,4 +158,5 @@ export const UserController = {
   updateProfile,
   forgotPass,
   resetPassword,
+  userBaseOnGender,
 };

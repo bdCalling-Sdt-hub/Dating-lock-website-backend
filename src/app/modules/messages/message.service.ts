@@ -15,7 +15,7 @@ const sendMessage = async (req: Request) => {
     const { files } = req;
     const data = JSON.parse(req.body.data);
     //@ts-ignore
-    const images = files.image[0];
+    const images = files?.image[0];
 
     const { message } = data;
 
@@ -52,10 +52,7 @@ const sendMessage = async (req: Request) => {
 
     if (conversation) {
       //@ts-ignore
-      io.to(newMessage.conversationId.toString()).emit(
-        'getMessage',
-        newMessage,
-      );
+      io.to(receiverId).emit('getMessage', newMessage);
     }
 
     return newMessage;
@@ -95,6 +92,7 @@ const sendGroupMessage = async (req: Request) => {
       senderId,
       receiverId: conversationId,
       message,
+      conversationId: conversationId,
     });
 
     if (newMessage) {
