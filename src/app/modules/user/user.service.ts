@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import bcrypt from 'bcrypt';
 import ApiError from '../../../errors/ApiError';
-import { IRegistration, IUser } from './user.interface';
+import { IRegistration, IReqUser, IUser } from './user.interface';
 import User from './user.model';
 import { JwtPayload, Secret } from 'jsonwebtoken';
 import config from '../../../config';
@@ -98,7 +98,12 @@ const updateProfile = async (
 ): Promise<IUser | null> => {
   //@ts-ignore
   const { files } = req;
-
+  const { userId } = req.user as IReqUser;
+  const checkValidUser = await User.findById(userId);
+  if (!checkValidUser) {
+    throw new ApiError(404, 'You are not authorized');
+  }
+  // console.log(req.body, 'Body Data');
   //@ts-ignore
   if (files?.profile_image?.length) {
     const result = await User.findOneAndUpdate(
@@ -128,12 +133,12 @@ const updateProfile = async (
     return result;
   } else {
     //@ts-ignore
-    const data = req.body.data;
+    const data = req.body;
     if (!data) {
       throw new Error('Data is missing in the request body!');
     }
 
-    const parsedData = JSON.parse(data);
+    // const parsedData = JSON.parse(data);
 
     const isExist = await User.findOne({ _id: id });
 
@@ -141,7 +146,7 @@ const updateProfile = async (
       throw new ApiError(404, 'User not found !');
     }
 
-    const { ...UserData } = parsedData;
+    const { ...UserData } = data;
 
     const updatedUserData: Partial<IUser> = { ...UserData };
 

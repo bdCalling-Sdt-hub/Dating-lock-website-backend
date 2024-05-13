@@ -5,6 +5,6 @@ import { ENUM_USER_ROLE } from '../../../enums/user';
 
 const router = express.Router();
 router.post('/send', FeedbackController.sendFeedBack);
-router.get('/all', auth(ENUM_USER_ROLE.ADMIN), FeedbackController.sendFeedBack);
+router.get('/all', auth(ENUM_USER_ROLE.ADMIN), FeedbackController.getFeedback);
 router.post('/reply/:id', FeedbackController.addReplyToFeedback);
 export const FeedbackRoutes = router;

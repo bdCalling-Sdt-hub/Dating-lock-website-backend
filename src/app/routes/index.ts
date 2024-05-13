@@ -1,7 +1,4 @@
 import express from 'express';
-import { UserRoutes } from '../modules/user/user.routes';
-import { AuthRoutes } from '../modules/auth/auth.routes';
-import { AdminRoutes } from '../modules/admin/admin.routes';
 import { PostRoutes } from '../modules/posts/post.routes';
 import { LockRoutes } from '../modules/lock/lock.routes';
 import { BlogRoutes } from '../modules/blog/blog.routes';
@@ -13,14 +10,11 @@ import { subscribeRoutes } from '../modules/subscribe/subscribe.routes';
 import { FeedbackRoutes } from '../modules/feedback/feedback.routes';
 import { MessageRoutes } from '../modules/messages/message.routes';
 import { SubscriptionRoutes } from '../modules/subscriptions/subscriptions.routes';
+import { AuthRoutes } from '../modules/auth/auth.routes';
 
 const router = express.Router();
 
 const moduleRoutes = [
-  {
-    path: '/user',
-    route: UserRoutes,
-  },
   {
     path: '/post',
     route: PostRoutes,
@@ -33,10 +27,10 @@ const moduleRoutes = [
     path: '/blog',
     route: BlogRoutes,
   },
-  {
-    path: '/admin',
-    route: AdminRoutes,
-  },
+  // {
+  //   path: '/admin',
+  //   route: AdminRoutes,
+  // },
   {
     path: '/manage',
     route: ManageRoutes,

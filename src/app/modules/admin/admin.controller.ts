@@ -2,7 +2,7 @@ import { Request, RequestHandler, Response } from 'express';
 import catchAsync from '../../../shared/catchasync';
 import sendResponse from '../../../shared/sendResponse';
 import { AdminService } from './admin.service';
-import { IUser } from '../user/user.interface';
+import { IReqUser, IUser } from '../user/user.interface';
 import config from '../../../config';
 import {
   ILoginUserResponse,
@@ -116,7 +116,7 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
 const changePassword = catchAsync(async (req: Request, res: Response) => {
   const { ...passwordData } = req.body;
 
-  await AdminService.changePassword(req.params.id, passwordData);
+  await AdminService.changePassword(req.user as IReqUser, passwordData);
   sendResponse<ILoginUserResponse>(res, {
     statusCode: 200,
     success: true,
@@ -143,13 +143,12 @@ const myProfile = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const forgotPass = catchAsync(async (req: Request, res: Response) => {
-  const result = await AdminService.forgotPass(req.body);
+  await AdminService.forgotPass(req.body);
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: 'Check your email!',
-    activationToken: result.resetToken,
   });
 });
 const resetPassword = catchAsync(async (req: Request, res: Response) => {

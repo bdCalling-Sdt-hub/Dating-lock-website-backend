@@ -15,7 +15,7 @@ const sendMessage = async (req: Request) => {
     const { files } = req;
     const data = JSON.parse(req.body.data);
     //@ts-ignore
-    const images = files?.image[0];
+    // const images = files?.image[0];
 
     const { message } = data;
 
@@ -36,13 +36,19 @@ const sendMessage = async (req: Request) => {
         participants: [senderId, receiverId],
       });
     }
+    let image = undefined;
 
+    //@ts-ignore
+    if (files && files?.image) {
+      //@ts-ignore
+      image = files.image[0].path;
+    }
     const newMessage = new Message({
       senderId,
       receiverId,
       message,
       conversationId: conversation._id,
-      image: images.path,
+      image,
     });
 
     if (newMessage) {
@@ -50,7 +56,7 @@ const sendMessage = async (req: Request) => {
     }
     await Promise.all([conversation.save(), newMessage.save()]);
 
-    if (conversation) {
+    if (conversation && newMessage) {
       //@ts-ignore
       io.to(receiverId).emit('getMessage', newMessage);
     }
@@ -60,10 +66,6 @@ const sendMessage = async (req: Request) => {
     //@ts-ignore
     console.log('Error in sendMessage controller: ', error?.message);
   }
-};
-//!
-const getConversation = async (id: string) => {
-  console.log(id);
 };
 //!
 const sendGroupMessage = async (req: Request) => {
@@ -102,7 +104,7 @@ const sendGroupMessage = async (req: Request) => {
     await Promise.all([conversation.save(), newMessage.save()]);
 
     // SOCKET IO FUNCTIONALITY WILL GO HERE
-    io.in(conversationId).emit('newGroupMessage', newMessage);
+    io.to(conversationId).emit('newGroupMessage', newMessage);
     return newMessage;
   } catch (error) {
     //@ts-ignore
@@ -171,11 +173,11 @@ const joinGroup = async (req: Request, id: string) => {
 //!
 const getMessages = async (req: Request, res: Response) => {
   try {
-    const { id: userToChatId } = req.params;
+    const { id: conversationId } = req.params;
     // const senderId = req.user?.userId;
 
     const conversation = await Conversation.findOne({
-      _id: userToChatId,
+      _id: conversationId,
     }).populate('messages');
     // const conversation = await Conversation.findOne({
     //   participants: { $all: [senderId, userToChatId] },
@@ -226,5 +228,4 @@ export const messageService = {
   sendGroupMessage,
   joinGroup,
   getGroupMessages,
-  getConversation,
 };

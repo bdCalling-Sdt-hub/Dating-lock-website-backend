@@ -8,10 +8,15 @@ import QueryBuilder from '../../../builder/QueryBuilder';
 
 //!
 const addBlog = async (user: IReqUser, req: Request) => {
-  const blogData = JSON.parse(req.body.data);
+  const blogData = req.body;
   const { files } = req;
   //@ts-ignore
-  const image = files.image[0].path;
+  let image = undefined;
+  //@ts-ignore
+  if (files && files.image) {
+    //@ts-ignore
+    image = files.image[0].path;
+  }
   const data = {
     created_by: user?.userId,
     image,
@@ -55,60 +60,33 @@ const deleteBlog = async (id: string) => {
 //!
 const updateBlog = async (id: string, req: Request) => {
   const { files } = req;
-  const data = req?.body?.data;
-  const result = await Blog.findById(id);
-  if (!result) {
+  let image = undefined;
+  //@ts-ignore
+  if (files && files.image) {
+    //@ts-ignore
+    image = files.image[0].path;
+  }
+  const data = req?.body;
+  const blog = await Blog.findById(id);
+  if (!blog) {
     throw new ApiError(404, 'Blog not found');
   }
-  //@ts-ignore
-  if (files?.image?.length && !data) {
-    const result = await Blog.findOneAndUpdate(
-      { _id: id },
-      //@ts-ignore
-      { image: files.image[0].path },
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
 
-    return result;
-  }
-  //@ts-ignore
-  else if (data && !files?.image?.length) {
+  const { ...BlogData } = data;
+
+  const updatedBlogData: Partial<IBlog> = { ...BlogData };
+  const result = await Blog.findOneAndUpdate(
+    { _id: id },
     {
-      const parsedData = JSON.parse(data);
-
-      const { ...BlogData } = parsedData;
-
-      const updatedBlogData: Partial<IBlog> = { ...BlogData };
-
-      const result = await Blog.findOneAndUpdate({ _id: id }, updatedBlogData, {
-        new: true,
-      });
-      return result;
-    }
-  }
-  //@ts-ignore
-  else if (data && files?.image?.length) {
-    const parsedData = JSON.parse(data);
-
-    const { ...BlogData } = parsedData;
-
-    const updatedBlogData: Partial<IBlog> = { ...BlogData };
-    const result = await Blog.findOneAndUpdate(
-      { _id: id },
-      {
-        //@ts-ignore
-        image: files.image[0].path,
-        ...updatedBlogData,
-      },
-      {
-        new: true,
-      },
-    );
-    return result;
-  }
+      //@ts-ignore
+      image,
+      ...updatedBlogData,
+    },
+    {
+      new: true,
+    },
+  );
+  return result;
 };
 export const BlogService = {
   addBlog,

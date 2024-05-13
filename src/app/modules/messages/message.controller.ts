@@ -2,7 +2,6 @@ import { Request, RequestHandler, Response } from 'express';
 import sendResponse from '../../../shared/sendResponse';
 import catchAsync from '../../../shared/catchasync';
 import { messageService } from './message.service';
-
 const sendMessage: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const result = await messageService.sendMessage(req);

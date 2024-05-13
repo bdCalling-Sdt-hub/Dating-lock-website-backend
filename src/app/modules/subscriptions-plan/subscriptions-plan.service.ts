@@ -11,13 +11,14 @@ import { SubscriptionPlan } from './subscriptions-plan.model';
 
 //! Admin Management Start
 const addSubscription = async (payload: ISubscriptionPlan) => {
-  const checkIsExist = await SubscriptionPlan.find({ title: payload.title });
+  const checkIsExist = await SubscriptionPlan.findOne({ title: payload.title });
   if (checkIsExist) {
     throw new ApiError(404, 'Subscription already exist');
   }
   const result = await SubscriptionPlan.create(payload);
   return result;
 };
+
 const addSubscriptionByTitle = async (payload: ISubscriptionPlanItem) => {
   const subscription = await SubscriptionPlan.findOne({
     _id: payload.subscriptions_id,
@@ -31,23 +32,47 @@ const addSubscriptionByTitle = async (payload: ISubscriptionPlanItem) => {
   await subscription.save();
   return subscription;
 };
+
 const getSubscriptions = async () => {
   //   console.log(id);
   const result = await SubscriptionPlan.find({});
   return result;
 };
+
 const updateSubscriptionsTitle = async (id: string, payload: any) => {
   try {
-    const subs = await SubscriptionPlan.findOne({ 'subscriptions_id._id': id });
+    const subs = await SubscriptionPlan.findOne({ _id: id });
 
     if (!subs) {
       throw new ApiError(404, 'Item not found');
     }
 
-    await SubscriptionPlan.updateOne(
-      { 'subscriptions_id._id': id },
-      { $set: { 'subscriptions_id.$.title': payload.title } },
+    const result = await SubscriptionPlan.findOneAndUpdate(
+      { _id: id },
+      { ...payload },
+      { new: true, runValidators: true },
     );
+    return result;
+  } catch (error) {
+    console.error(error);
+    //@ts-ignore
+    throw new Error(error?.message);
+  }
+};
+const updateSubscriptionsItem = async (id: string, payload: any) => {
+  try {
+    const subs = await SubscriptionPlan.findOne({ 'items._id': id });
+
+    if (!subs) {
+      throw new ApiError(404, 'Item not found');
+    }
+
+    const result = await SubscriptionPlan.findOneAndUpdate(
+      { 'items._id': id },
+      { $set: { 'items.$.title': payload.title } },
+      { new: true },
+    );
+    return result;
   } catch (error) {
     console.error(error);
     //@ts-ignore
@@ -124,5 +149,5 @@ export const SubscriptionsPlanService = {
   getSubscriptions,
   deleteSubscriptions,
   updateSubscriptionsTitle,
-  // upgradeSubscriptionPlan,
+  updateSubscriptionsItem,
 };

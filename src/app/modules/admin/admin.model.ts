@@ -7,29 +7,52 @@ const AdminSchema = new Schema<IAdmin, AdminModel>(
   {
     name: {
       type: String,
-      // required: true,
+
+      required: true,
+    },
+    user_name: {
+      type: String,
+      unique: true,
+      sparse: true,
+      required: true,
     },
     email: {
       type: String,
       required: true,
       unique: true,
     },
-    phoneNumber: {
+    phone_number: {
       type: String,
       unique: true,
+      sparse: true,
     },
     password: {
       type: String,
       required: true,
       select: 0,
     },
+    address: {
+      type: String,
+    },
+
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'others'],
+      required: true,
+    },
     location: {
       type: String,
     },
-    dateOfBirth: {
+    date_of_birth: {
       type: Date,
     },
     profile_image: {
+      type: String,
+    },
+    language: {
+      type: String,
+    },
+    relationship_status: {
       type: String,
     },
 
@@ -49,7 +72,7 @@ const AdminSchema = new Schema<IAdmin, AdminModel>(
 
 AdminSchema.statics.isAdminExist = async function (
   email: string,
-): Promise<Pick<IAdmin, '_id' | 'password' | 'phoneNumber' | 'role'> | null> {
+): Promise<Pick<IAdmin, '_id' | 'password' | 'phone_number' | 'role'> | null> {
   return await Admin.findOne(
     { email },
     {
@@ -57,7 +80,7 @@ AdminSchema.statics.isAdminExist = async function (
       email: 1,
       password: 1,
       role: 1,
-      phoneNumber: 1,
+      phone_number: 1,
     },
   );
 };

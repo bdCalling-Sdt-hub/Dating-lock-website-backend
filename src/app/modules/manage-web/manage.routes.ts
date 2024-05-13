@@ -5,82 +5,82 @@ import { ManageController } from './manage.controller';
 const router = express.Router();
 
 router.post(
-  '/addAboutUs',
+  '/add-about-us',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.addAboutUs,
 );
 router.post(
-  '/addTermsConditions',
+  '/add-terms-conditions',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.addTermsConditions,
 );
 router.post(
-  '/addContactUs',
+  '/add-contact-us',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.addContactUs,
 );
 router.post(
-  '/addPrivacyPolicy',
+  '/add-privacy-policy',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.addPrivacyPolicy,
 );
 router.get(
-  '/getPrivacyPolicy',
+  '/get-privacy-policy',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.getPrivacyPolicy,
 );
 router.get(
-  '/getAboutUs',
+  '/get-about-us',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.getAboutUs,
 );
 router.get(
-  '/getTermsConditions',
+  '/get-terms-conditions',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.getTermsConditions,
 );
 router.get(
-  '/getContactUs',
+  '/get-contact-us',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.getContactUs,
 );
 router.patch(
-  '/editPrivacyPolicy/:id',
+  '/edit-privacy-policy/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.editPrivacyPolicy,
 );
 router.patch(
-  '/editAboutUs/:id',
+  '/edit-about-us/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.editAboutUs,
 );
 router.patch(
-  '/editTermsConditions/:id',
+  '/edit-terms-conditions/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.editTermsConditions,
 );
 router.patch(
-  '/editContactUs/:id',
+  '/edit-contact-us/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.editContactUs,
 );
 router.delete(
-  '/deleteAboutUs/:id',
+  '/delete-about-us/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.deleteAboutUs,
 );
 router.delete(
-  '/deleteContactUs/:id',
+  '/delete-contact-us/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.deleteContactUs,
 );
 router.delete(
-  '/deletePrivacyPolicy/:id',
+  '/delete-privacy-policy/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.deletePrivacyPolicy,
 );
 router.delete(
-  '/deleteTermsConditions/:id',
+  '/delete-terms-conditions/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.deleteTermsConditions,
 );

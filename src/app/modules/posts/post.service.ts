@@ -9,17 +9,22 @@ import { IReqUser } from '../user/user.interface';
 //! Add a post
 const createPost = async (req: Request) => {
   const { files } = req;
-  const data = req.body.data;
+  const data = req.body;
   //@ts-ignore
-  if (!data || !files?.image) {
+  if (!data && !files?.image) {
     throw new Error('Data or image missing in the request body!');
   }
   //@ts-ignore
-  const image = files?.image[0].path;
-  const postData = JSON.parse(data);
+  let image = undefined;
+  //@ts-ignore
+  if (files && files.image) {
+    //@ts-ignore
+    image = files?.image[0].path;
+  }
+
   const result = await Post.create({
     image,
-    ...postData,
+    ...data,
   });
   return result;
 };
@@ -59,60 +64,33 @@ const deletePost = async (id: string) => {
 //! Update post
 const updatePost = async (id: string, req: Request) => {
   const { files } = req;
-  const data = req?.body?.data;
-  const result = await Post.findById(id);
-  if (!result) {
+  const data = req?.body;
+  const post = await Post.findById(id);
+  if (!post) {
     throw new ApiError(404, 'Post not found');
   }
-  //@ts-ignore
-  if (files?.image?.length && !data) {
-    const result = await Post.findOneAndUpdate(
-      { _id: id },
-      //@ts-ignore
-      { image: files.image[0].path },
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
 
-    return result;
-  }
+  const { ...PostData } = data;
+
+  let image = undefined;
   //@ts-ignore
-  else if (data && !files?.image?.length) {
+  if (files && files.image) {
+    //@ts-ignore
+    image = files?.image[0].path;
+  }
+  const updatedPostData: Partial<IPost> = { ...PostData };
+  const result = await Post.findOneAndUpdate(
+    { _id: id },
     {
-      const parsedData = JSON.parse(data);
-
-      const { ...PostData } = parsedData;
-
-      const updatedPostData: Partial<IPost> = { ...PostData };
-
-      const result = await Post.findOneAndUpdate({ _id: id }, updatedPostData, {
-        new: true,
-      });
-      return result;
-    }
-  }
-  //@ts-ignore
-  else if (data && files?.image?.length) {
-    const parsedData = JSON.parse(data);
-
-    const { ...PostData } = parsedData;
-
-    const updatedPostData: Partial<IPost> = { ...PostData };
-    const result = await Post.findOneAndUpdate(
-      { _id: id },
-      {
-        //@ts-ignore
-        image: files.image[0].path,
-        ...updatedPostData,
-      },
-      {
-        new: true,
-      },
-    );
-    return result;
-  }
+      //@ts-ignore
+      image,
+      ...updatedPostData,
+    },
+    {
+      new: true,
+    },
+  );
+  return result;
 };
 export const PostService = {
   createPost,

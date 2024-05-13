@@ -35,5 +35,10 @@ router.patch(
   auth(ENUM_USER_ROLE.ADMIN),
   SubscriptionsPlanController.updateSubscriptionsTitle,
 );
+router.patch(
+  '/update-item/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  SubscriptionsPlanController.updateSubscriptionsItem,
+);
 
 export const SubscriptionPlanRoutes = router;

@@ -9,13 +9,17 @@ import { IEvent } from './events.interface';
 
 //!
 const addEvent = async (user: IReqUser, req: Request) => {
-  const eventData = JSON.parse(req.body.data);
+  const eventData = req.body;
   //@ts-ignore
-  if (!req.files?.image?.length) {
-    throw new ApiError(404, 'Image is required');
+  const { files } = req;
+
+  let image = undefined;
+  //@ts-ignore
+  if (files && files.image) {
+    //@ts-ignore
+    image = files.image[0].path;
   }
   //@ts-ignore
-  const image = req.files?.image[0]?.path;
 
   const hostedByUser = await Admin.findById(user.userId);
   if (!hostedByUser) {

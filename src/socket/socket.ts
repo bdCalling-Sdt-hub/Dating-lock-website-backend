@@ -24,7 +24,6 @@ const initializeSocketIO = (server: any) => {
     // Handle 'message' event
     socket.on('sendMessage', (messages: any) => {
       console.log(messages, 'Message');
-      // const { message, conversationId } = messages;
       // io.to(conversationId).emit('getMessage', message);
     });
 

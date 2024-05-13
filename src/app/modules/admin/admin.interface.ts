@@ -5,12 +5,17 @@ export type IAdmin = {
   _id?: string;
   name: string;
   email: string;
-  phoneNumber: string;
+  user_name: string;
+  phone_number: string;
+  address: string;
+  gender: 'male' | 'female' | 'others';
   password: string;
   role: 'ADMIN' | 'SUPER_ADMIN';
   profile_image: string;
-  dateOfBirth: Date;
+  date_of_birth: Date;
   location: string;
+  language: string;
+  relationship_status: string;
 };
 export type AdminModel = {
   isAdminExist(

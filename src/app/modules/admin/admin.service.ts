@@ -13,7 +13,7 @@ import {
   ILoginUserResponse,
   IRefreshTokenResponse,
 } from '../auth/auth.interface';
-import { IRegistration, IUser } from '../user/user.interface';
+import { IRegistration, IReqUser, IUser } from '../user/user.interface';
 import User from '../user/user.model';
 import Admin from './admin.model';
 import httpStatus from 'http-status';
@@ -111,42 +111,39 @@ const updateAdmin = async (
 ): Promise<IAdmin | null> => {
   //@ts-ignore
   const { files } = req;
-  if (files?.image?.length) {
-    const result = await Admin.findOneAndUpdate(
-      { _id: id },
-      //@ts-ignore
-      { profile_image: files.image[0].path },
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
 
-    return result;
-  } else {
+  let profile_image = undefined;
+
+  //@ts-ignore
+  if (files && files?.profile_image) {
     //@ts-ignore
-    const data = req.body.data;
-    if (!data) {
-      throw new Error('Data is missing in the request body!');
-    }
-
-    const parsedData = JSON.parse(data); // Parse the data if it exists
-
-    const isExist = await Admin.findOne({ _id: id });
-
-    if (!isExist) {
-      throw new ApiError(404, 'Admin not found !');
-    }
-
-    const { ...AdminData } = parsedData;
-
-    const updatedAdminData: Partial<IAdmin> = { ...AdminData };
-
-    const result = await Admin.findOneAndUpdate({ _id: id }, updatedAdminData, {
-      new: true,
-    });
-    return result;
+    profile_image = files.profile_image[0].path;
   }
+
+  //@ts-ignore
+  const data = req.body;
+  if (!data) {
+    throw new Error('Data is missing in the request body!');
+  }
+
+  const isExist = await Admin.findOne({ _id: id });
+
+  if (!isExist) {
+    throw new ApiError(404, 'Admin not found !');
+  }
+
+  const { ...adminData } = data;
+  //@ts-ignore
+  const updatedAdminData: Partial<IAdmin> = { ...adminData };
+
+  const result = await Admin.findOneAndUpdate(
+    { _id: id },
+    { profile_image, ...updatedAdminData },
+    {
+      new: true,
+    },
+  );
+  return result;
 };
 //!
 const deleteUser = async (id: string): Promise<IUser | null> => {
@@ -191,7 +188,6 @@ const login = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
     accessToken,
     refreshToken,
     //@ts-ignore
-    adminInfo: othersData,
   };
 };
 //!
@@ -233,12 +229,14 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
 };
 //!
 const changePassword = async (
-  id: string | null,
+  user: IReqUser,
   payload: IChangePassword,
 ): Promise<void> => {
   const { oldPassword, newPassword } = payload;
 
-  const isAdminExist = await Admin.findOne({ _id: id }).select('+password');
+  const isAdminExist = await Admin.findOne({ _id: user?.userId }).select(
+    '+password',
+  );
 
   if (!isAdminExist) {
     throw new ApiError(404, 'Admin does not exist');

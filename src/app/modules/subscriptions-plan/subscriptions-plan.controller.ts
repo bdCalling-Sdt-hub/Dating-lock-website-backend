@@ -60,6 +60,20 @@ const updateSubscriptionsTitle = catchAsync(
     });
   },
 );
+const updateSubscriptionsItem = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await SubscriptionsPlanService.updateSubscriptionsItem(
+      req.params.id,
+      req.body,
+    );
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Subscriptions item Update successfully',
+      data: result,
+    });
+  },
+);
 const deleteSubscriptions = catchAsync(async (req: Request, res: Response) => {
   const result = await SubscriptionsPlanService.deleteSubscriptions(
     req.params.id,
@@ -97,5 +111,5 @@ export const SubscriptionsPlanController = {
   deleteSubscriptionsTitle,
   deleteSubscriptions,
   updateSubscriptionsTitle,
-  // upgradeSubscriptionPlan,
+  updateSubscriptionsItem,
 };

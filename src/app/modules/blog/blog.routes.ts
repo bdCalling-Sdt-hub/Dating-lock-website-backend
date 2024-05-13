@@ -23,7 +23,7 @@ router.post(
   BlogLikeCommentController.addComment,
 );
 router.get(
-  '/all',
+  '/get-all',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   BlogController.getBlogs,
 );
