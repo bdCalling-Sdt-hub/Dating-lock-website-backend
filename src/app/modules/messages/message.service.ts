@@ -13,7 +13,7 @@ const sendMessage = async (req: Request) => {
     const { id: receiverId } = req.params;
     const senderId = req.user?.userId;
     const { files } = req;
-    const data = JSON.parse(req.body.data);
+    const data = req.body;
     //@ts-ignore
     // const images = files?.image[0];
 
