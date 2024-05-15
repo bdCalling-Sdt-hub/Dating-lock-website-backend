@@ -103,13 +103,18 @@ const updateProfile = async (
   if (!checkValidUser) {
     throw new ApiError(404, 'You are not authorized');
   }
+
   // console.log(req.body, 'Body Data');
   //@ts-ignore
   if (files?.profile_image?.length) {
     const result = await User.findOneAndUpdate(
       { _id: id },
       //@ts-ignore
-      { profile_image: files.profile_image[0].path },
+      {
+        //@ts-ignore
+        profile_image: files.profile_image[0].path,
+      },
+
       {
         new: true,
         runValidators: true,

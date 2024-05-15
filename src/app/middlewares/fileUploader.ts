@@ -1,18 +1,30 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Request } from 'express';
 import multer from 'multer';
-import path from 'path';
 
 export const uploadFile = () => {
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
+      let uploadPath = '';
+
+      if (
+        file.fieldname === 'cover_image' ||
+        file.fieldname === 'profile_image'
+      ) {
+        uploadPath = 'uploads/images/profile';
+      } else if (file.fieldname === 'image') {
+        uploadPath = 'uploads/images/image';
+      } else {
+        uploadPath = 'uploads/images';
+      }
+
       if (
         file.mimetype === 'image/jpeg' ||
         file.mimetype === 'image/png' ||
         file.mimetype === 'image/jpg' ||
         file.mimetype === 'video/mp4'
       ) {
-        cb(null, path.join('uploads'));
+        cb(null, uploadPath);
       } else {
         //@ts-ignore
         cb(new Error('Invalid file type'));
