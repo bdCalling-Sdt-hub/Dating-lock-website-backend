@@ -4,10 +4,17 @@ import { ENUM_USER_ROLE } from '../../../enums/user';
 import { uploadFile } from '../../middlewares/fileUploader';
 import { UserController } from '../user/user.controller';
 import { AdminController } from '../admin/admin.controller';
+import { validateRequest } from '../../middlewares/validateRequest';
+import { AdminValidation } from '../admin/admin.validation';
+import { UserValidation } from '../user/user.validations';
 
 const router = express.Router();
 //!User
-router.post('/register', UserController.registrationUser);
+router.post(
+  '/register',
+  validateRequest(UserValidation.create),
+  UserController.registrationUser,
+);
 router.post('/login', UserController.login);
 router.post('/refresh-token', UserController.refreshToken);
 router.get(
@@ -42,7 +49,11 @@ router.patch(
 );
 
 //! Admin Authentication Start
-router.post('/admin/register', AdminController.registrationUser);
+router.post(
+  '/admin/register',
+  validateRequest(AdminValidation.create),
+  AdminController.registrationUser,
+);
 router.post('/admin/login', AdminController.login);
 router.post('/admin/refresh-token', AdminController.refreshToken);
 router.post('/admin/forgot-password', AdminController.forgotPass);
@@ -55,6 +66,7 @@ router.patch(
 router.post(
   '/admin/add-admin',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  validateRequest(AdminValidation.create),
   AdminController.registrationUser,
 );
 //! Admin Authentication End
