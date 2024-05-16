@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 import { IAdmin } from '../admin/admin.interface';
+import { IUser } from '../user/user.interface';
 
 export type IEvent = {
   title: string;
@@ -13,4 +14,7 @@ export type IEvent = {
   category: string;
   participants: [];
   time_slots: [];
+};
+export type IParticipant = {
+  user: Types.ObjectId | IUser;
 };

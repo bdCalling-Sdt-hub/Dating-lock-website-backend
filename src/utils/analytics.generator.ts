@@ -5,7 +5,7 @@ type MonthData = {
   count: number;
 };
 
-//! Generate last 12 month
+//* Generate last 12 month
 // export async function generatedLast12MonthData<T>(
 //   model: Model<T>,
 // ): Promise<{ last12Months: MonthData[] }> {
@@ -39,7 +39,7 @@ type MonthData = {
 //   }
 //   return { last12Months };
 // }
-//!
+//*
 export async function generatedLast12MonthData<T>(
   model: Model<T>,
 ): Promise<{ last12MonthsData: MonthData[] }> {
@@ -76,7 +76,7 @@ export async function generatedLast12MonthData<T>(
   return { last12MonthsData };
 }
 
-//! Last month
+//* Last month
 // export async function generateLastOneMonthData<T>(
 //   model: Model<T>,
 // ): Promise<{ lastOneMonth: MonthData[] }> {
@@ -113,7 +113,7 @@ export async function generatedLast12MonthData<T>(
 
 //   return { lastOneMonth };
 // }
-//!
+//*
 export async function generateLastMonthsData<T>(
   model: Model<T>,
   numberOfMonths: number,
@@ -166,7 +166,7 @@ type PeriodData = {
   count: number;
 };
 
-//! Day and week
+//* Day and week
 // export async function generatePeriodData<T>(
 //   model: Model<T>,
 //   periodInDays: number,
@@ -201,7 +201,7 @@ type PeriodData = {
 //   }
 //   return { periodData };
 // }
-//!
+//*
 export async function generatePeriodData<T>(
   model: Model<T>,
   periodInDays: number,

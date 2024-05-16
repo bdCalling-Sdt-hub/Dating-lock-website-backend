@@ -4,12 +4,15 @@ import { ENUM_USER_ROLE } from '../../../enums/user';
 import { uploadFile } from '../../middlewares/fileUploader';
 import { BlogController } from './blog.controller';
 import { BlogLikeCommentController } from '../blog-like-comment/blog_like.controller';
+import { validateRequest } from '../../middlewares/validateRequest';
+import { BlogValidation } from './blog.validation';
 const router = express.Router();
 
 router.post(
   '/add',
   auth(ENUM_USER_ROLE.ADMIN),
   uploadFile(),
+  validateRequest(BlogValidation.post),
   BlogController.addBlog,
 );
 router.post(

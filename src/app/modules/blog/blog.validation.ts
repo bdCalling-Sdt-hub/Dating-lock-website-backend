@@ -2,11 +2,11 @@ import { z } from 'zod';
 
 const post = z.object({
   body: z.object({
-    user: z
-      .string({
-        required_error: 'User ID is required',
-      })
-      .nonempty(),
+    // created_by: z
+    //   .string({
+    //     required_error: 'created_by ID is required',
+    //   })
+    //   .nonempty(),
     title: z
       .string({
         required_error: 'Title is required',
@@ -32,6 +32,6 @@ const post = z.object({
   }),
 });
 
-export const PostValidation = {
+export const BlogValidation = {
   post,
 };

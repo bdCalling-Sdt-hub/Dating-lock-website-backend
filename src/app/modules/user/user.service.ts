@@ -26,7 +26,7 @@ import { ENUM_USER_ROLE } from '../../../enums/user';
 import { sendResetEmail } from '../auth/sendResetMails';
 import { userSearchableField } from './user.constants';
 
-//!
+//*
 const registrationUser = async (payload: IRegistration) => {
   const { name, email, password } = payload;
 
@@ -54,13 +54,13 @@ const registrationUser = async (payload: IRegistration) => {
 
   return userWithoutPassword;
 };
-//!
+//*
 const createUser = async (userData: IUser): Promise<IUser | null> => {
   const newUser = await User.create(userData);
 
   return newUser;
 };
-//!
+//*
 const getAllUsers = async (
   query: Record<string, unknown>,
 ): Promise<IGenericResponse<IUser[]>> => {
@@ -79,7 +79,7 @@ const getAllUsers = async (
     data: result,
   };
 };
-//!
+//*
 const getSingleUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findById(id);
   if (!result) {
@@ -91,7 +91,7 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
   };
   return updatedResult;
 };
-//!
+//*
 const updateProfile = async (
   id: string,
   req: Request,
@@ -161,13 +161,13 @@ const updateProfile = async (
     return result;
   }
 };
-//!
+//*
 const deleteUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findByIdAndDelete(id);
 
   return result;
 };
-//!
+//*
 const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
   const { email, password } = payload;
 
@@ -204,7 +204,7 @@ const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
     refreshToken,
   };
 };
-//!
+//*
 const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   //verify token
   // invalid token - synchronous
@@ -240,7 +240,7 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
     accessToken: newAccessToken,
   };
 };
-//!
+//*
 const changePassword = async (
   user: JwtPayload | null,
   payload: IChangePassword,
@@ -261,7 +261,7 @@ const changePassword = async (
   isUserExist.password = newPassword;
   isUserExist.save();
 };
-//!
+//*
 const forgotPass = async (payload: { email: string }) => {
   const user = await User.findOne(
     { email: payload.email },
@@ -304,7 +304,7 @@ const forgotPass = async (payload: { email: string }) => {
   `,
   );
 };
-//!
+//*
 const resetPassword = async (
   payload: { email: string; newPassword: string },
   token: string,
@@ -325,7 +325,7 @@ const resetPassword = async (
 
   await User.updateOne({ email }, { password }, { new: true });
 };
-//!
+//*
 const userBaseOnGender = async () => {
   const maleUsers = await User.find({ gender: 'male' });
   const totalMale = await User.countDocuments(maleUsers);

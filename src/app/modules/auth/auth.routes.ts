@@ -9,7 +9,7 @@ import { AdminValidation } from '../admin/admin.validation';
 import { UserValidation } from '../user/user.validations';
 
 const router = express.Router();
-//!User
+//*User
 router.post(
   '/register',
   validateRequest(UserValidation.create),
@@ -35,7 +35,7 @@ router.patch(
 router.post('/forgot-password', UserController.forgotPass);
 router.post('/reset-password', UserController.resetPassword);
 
-//!IDS Work
+//*IDS Work
 router.get(
   '/profile/:id',
   auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
@@ -48,7 +48,7 @@ router.patch(
   UserController.updateProfile,
 );
 
-//! Admin Authentication Start
+//* Admin Authentication Start
 router.post(
   '/admin/register',
   validateRequest(AdminValidation.create),
@@ -69,7 +69,7 @@ router.post(
   validateRequest(AdminValidation.create),
   AdminController.registrationUser,
 );
-//! Admin Authentication End
+//* Admin Authentication End
 
 router.get(
   '/admin/users',
@@ -87,7 +87,7 @@ router.post(
   AdminController.createUser,
 );
 
-//! Admin Update
+//* Admin Update
 router.patch(
   '/admin/edit-profile/:id',
   auth(ENUM_USER_ROLE.ADMIN),

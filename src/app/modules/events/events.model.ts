@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
-import { IEvent } from './events.interface';
+import { IEvent, IParticipant } from './events.interface';
 
-const participantSchema = new Schema(
+const participantSchema = new Schema<IParticipant>(
   {
     user: {
       type: Schema.Types.ObjectId,

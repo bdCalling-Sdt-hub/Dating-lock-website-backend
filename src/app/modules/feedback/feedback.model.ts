@@ -1,6 +1,7 @@
 import mongoose, { model } from 'mongoose';
+import { IFeedback, IReply } from './feedback.interface';
 
-const replySchema = new mongoose.Schema(
+const replySchema = new mongoose.Schema<IReply>(
   {
     text: {
       type: String,
@@ -19,7 +20,7 @@ const replySchema = new mongoose.Schema(
   },
 );
 
-const feedbackSchema = new mongoose.Schema(
+const feedbackSchema = new mongoose.Schema<IFeedback>(
   {
     name: {
       type: String,

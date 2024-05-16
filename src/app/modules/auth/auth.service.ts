@@ -10,7 +10,7 @@ import { ENUM_USER_ROLE } from '../../../enums/user';
 import Admin from '../admin/admin.model';
 import { sendResetEmail } from './sendResetMails';
 
-//! This is forget password controller
+//* This is forget password controller
 const forgotPass = async (payload: { email: string }) => {
   const user = await User.findOne(
     { email: payload.email },
@@ -55,7 +55,7 @@ const forgotPass = async (payload: { email: string }) => {
   `,
   );
 };
-//! This is reset i means set new password controller
+//* This is reset i means set new password controller
 const resetPassword = async (
   payload: { email: string; newPassword: string },
   token: string,

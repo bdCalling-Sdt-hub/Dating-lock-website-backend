@@ -6,7 +6,7 @@ import {
   TermsConditions,
 } from './manage.model';
 
-//!
+//*
 const addPrivacyPolicy = async (payload: any) => {
   return await PrivacyPolicy.create(payload);
 };
@@ -34,7 +34,7 @@ const deletePrivacyPolicy = async (id: string) => {
   }
   return await PrivacyPolicy.findByIdAndDelete(id);
 };
-//!
+//*
 const addAboutUs = async (payload: any) => {
   return await AboutUs.create(payload);
 };
@@ -59,7 +59,7 @@ const deleteAboutUs = async (id: string) => {
   }
   return await AboutUs.findByIdAndDelete(id);
 };
-//!
+//*
 const addTermsConditions = async (payload: any) => {
   return await TermsConditions.create(payload);
 };
@@ -88,7 +88,7 @@ const deleteTermsConditions = async (id: string) => {
   return await TermsConditions.findByIdAndDelete(id);
 };
 
-//!
+//*
 const addContactUs = async (payload: any) => {
   return await ContactUs.create(payload);
 };
@@ -113,7 +113,7 @@ const deleteContactUs = async (id: string) => {
   }
   return await ContactUs.findByIdAndDelete(id);
 };
-//!
+//*
 
 export const ManageService = {
   addPrivacyPolicy,

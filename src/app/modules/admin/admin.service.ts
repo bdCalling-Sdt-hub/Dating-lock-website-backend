@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import config from '../../../config';
 import bcrypt from 'bcrypt';
-import jwt, { Secret } from 'jsonwebtoken';
+import { Secret } from 'jsonwebtoken';
 import ApiError from '../../../errors/ApiError';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import {
@@ -21,13 +21,12 @@ import QueryBuilder from '../../../builder/QueryBuilder';
 import { IGenericResponse } from '../../../interfaces/paginations';
 import { updateImageUrl } from '../../../utils/url-modifier';
 import { IAdmin } from './admin.interface';
-import { hashedPassword } from '../../../helpers/hashPasswordHelper';
 import { sendResetEmail } from '../auth/sendResetMails';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import sendEmail from '../../../utils/sendEmail';
 import { registrationSuccessEmailBody } from '../../../mails/user.register';
 
-//!
+//*
 const registrationUser = async (payload: IRegistration) => {
   const { name, email, password } = payload;
 
@@ -53,12 +52,12 @@ const registrationUser = async (payload: IRegistration) => {
 
   return userWithoutPassword;
 };
-//!
+//*
 const createUser = async (userData: IUser): Promise<IUser | null> => {
   const newUser = await User.create(userData);
   return newUser;
 };
-//!
+//*
 const getAllUsers = async (
   query: Record<string, unknown>,
 ): Promise<IGenericResponse<IUser[]>> => {
@@ -77,7 +76,7 @@ const getAllUsers = async (
     data: result,
   };
 };
-//!
+//*
 const getSingleUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findById(id);
   if (!result) {
@@ -104,7 +103,7 @@ const getAllAdmin = async () => {
   });
   return updatedResults;
 };
-//!
+//*
 const updateAdmin = async (
   id: string,
   req: Request,
@@ -145,12 +144,12 @@ const updateAdmin = async (
   );
   return result;
 };
-//!
+//*
 const deleteUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findByIdAndDelete(id);
   return result;
 };
-//!
+//*
 const login = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
   const { email, password } = payload;
 
@@ -190,7 +189,7 @@ const login = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
     //@ts-ignore
   };
 };
-//!
+//*
 const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   //verify token
   // invalid token - synchronous
@@ -227,7 +226,7 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
     accessToken: newAccessToken,
   };
 };
-//!
+//*
 const changePassword = async (
   user: IReqUser,
   payload: IChangePassword,
@@ -250,7 +249,7 @@ const changePassword = async (
   isAdminExist.password = newPassword;
   isAdminExist.save();
 };
-//!
+//*
 const forgotPass = async (payload: { email: string }) => {
   const admin = await Admin.findOne(
     { email: payload.email },
@@ -293,7 +292,7 @@ const forgotPass = async (payload: { email: string }) => {
   `,
   );
 };
-//!
+//*
 const resetPassword = async (
   payload: { email: string; newPassword: string },
   token: string,
@@ -314,7 +313,7 @@ const resetPassword = async (
 
   await Admin.updateOne({ email }, { password }, { new: true });
 };
-//!
+//*
 const myProfile = async (id: string) => {
   const result = await Admin.findById(id);
   if (!result) {

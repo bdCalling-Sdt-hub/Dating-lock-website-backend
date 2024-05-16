@@ -6,7 +6,7 @@ import ApiError from '../../../errors/ApiError';
 import { IBlog } from './blog.interface';
 import QueryBuilder from '../../../builder/QueryBuilder';
 
-//!
+//*
 const addBlog = async (user: IReqUser, req: Request) => {
   const blogData = req.body;
   const { files } = req;
@@ -24,7 +24,7 @@ const addBlog = async (user: IReqUser, req: Request) => {
   };
   return await Blog.create(data);
 };
-//!
+//*
 const getBlogs = async (query: Record<string, unknown>) => {
   const postQuery = new QueryBuilder(Blog.find({}), query)
     .search(['title', 'description'])
@@ -41,7 +41,7 @@ const getBlogs = async (query: Record<string, unknown>) => {
     data: result,
   };
 };
-//!
+//*
 const getSingleBlog = async (id: string) => {
   const isExist = await Blog.findById(id);
   if (!isExist) {
@@ -49,7 +49,7 @@ const getSingleBlog = async (id: string) => {
   }
   return isExist;
 };
-//!
+//*
 const deleteBlog = async (id: string) => {
   const isExist = await Blog.findById(id);
   if (!isExist) {
@@ -57,7 +57,7 @@ const deleteBlog = async (id: string) => {
   }
   return await Blog.findByIdAndDelete(id);
 };
-//!
+//*
 const updateBlog = async (id: string, req: Request) => {
   const { files } = req;
   let image = undefined;

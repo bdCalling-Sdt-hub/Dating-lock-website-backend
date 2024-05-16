@@ -3,7 +3,7 @@ import catchAsync from '../../../shared/catchasync';
 import sendResponse from '../../../shared/sendResponse';
 import { SubscriptionsPlanService } from './subscriptions-plan.service';
 
-//! Admin STart
+//* Admin STart
 const adSubscriptions = catchAsync(async (req: Request, res: Response) => {
   const result = await SubscriptionsPlanService.addSubscription(req.body);
   sendResponse(res, {
@@ -85,9 +85,9 @@ const deleteSubscriptions = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-//! Admin End
+//* Admin End
 
-//! User Start
+//* User Start
 // const upgradeSubscriptionPlan = catchAsync(
 //   async (req: Request, res: Response) => {
 //     const result = await SubscriptionsPlanService.upgradeSubscriptionPlan(
@@ -102,7 +102,7 @@ const deleteSubscriptions = catchAsync(async (req: Request, res: Response) => {
 //     });
 //   },
 // );
-//! User End
+//* User End
 
 export const SubscriptionsPlanController = {
   adSubscriptions,

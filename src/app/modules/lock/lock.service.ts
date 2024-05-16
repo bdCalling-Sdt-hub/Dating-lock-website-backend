@@ -8,7 +8,7 @@ import { ILockRequest } from './lock.interface';
 import { Lock } from './lock.model';
 import { getRequestLimit } from '../../../utils/Subscription';
 
-//! add lock request
+//* add lock request
 const requestLock = async (user: any, payload: ILockRequest) => {
   const data = {
     fromUser: user?.userId,
@@ -48,7 +48,7 @@ const requestLock = async (user: any, payload: ILockRequest) => {
     return populatedLock;
   }
 };
-//! my pending request
+//* my pending request
 const myPendingLock = async (user: IReqUser) => {
   const result = await Lock.find({
     $and: [{ status: 'pending' }, { toUser: user.userId }],
@@ -64,7 +64,7 @@ const myPendingLock = async (user: IReqUser) => {
   ]);
   return result;
 };
-//! that is sent request to user
+//* that is sent request to user
 const myRequestedLock = async (user: IReqUser) => {
   const result = await Lock.find({
     $and: [{ status: 'pending' }, { fromUser: user.userId }],
@@ -80,7 +80,7 @@ const myRequestedLock = async (user: IReqUser) => {
   ]);
   return result;
 };
-//! lock accept controller
+//* lock accept controller
 const acceptLock = async (user: IReqUser, payload: ILockRequest) => {
   const { fromUser, response } = payload;
 
@@ -109,7 +109,7 @@ const acceptLock = async (user: IReqUser, payload: ILockRequest) => {
   await friendRequest.save();
   return friendRequest;
 };
-//! lock reject controller
+//* lock reject controller
 const rejectLock = async (user: IReqUser, payload: ILockRequest) => {
   const { fromUser, response } = payload;
 
@@ -137,7 +137,7 @@ const rejectLock = async (user: IReqUser, payload: ILockRequest) => {
   friendRequest.status = response;
   await friendRequest.save();
 };
-//! my friend list
+//* my friend list
 const myLockList = async (
   user: IReqUser,
   filters: any,
@@ -216,7 +216,7 @@ const myLockList = async (
     data: result,
   };
 };
-//! delete lock from my friend list
+//* delete lock from my friend list
 const deleteLock = async (id: string) => {
   const isExists = await Lock.findById(id);
   if (!isExists) {

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
+import { IComment, ILike } from './blog_like.interface';
 
-export const likeSchema = new mongoose.Schema(
+export const likeSchema = new mongoose.Schema<ILike>(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -16,7 +17,7 @@ export const likeSchema = new mongoose.Schema(
   },
 );
 
-export const commentSchema = new mongoose.Schema(
+export const commentSchema = new mongoose.Schema<IComment>(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,

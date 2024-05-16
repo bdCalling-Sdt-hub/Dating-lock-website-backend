@@ -6,7 +6,7 @@
 // import { uploadFile } from '../../middlewares/fileUploader';
 
 // const router = express.Router();
-// //! Admin Authentication Start
+// //* Admin Authentication Start
 // router.post('/register', AdminController.registrationUser);
 // router.post('/login', AdminController.login);
 // router.post('/refresh-token', AdminController.refreshToken);
@@ -18,7 +18,7 @@
 //   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
 //   AdminController.registrationUser,
 // );
-// //! Admin Authentication End
+// //* Admin Authentication End
 
 // router.get('/users', auth(ENUM_USER_ROLE.ADMIN), UserController.getAllUsers);
 // router.get('/admins', auth(ENUM_USER_ROLE.ADMIN), AdminController.getAllAdmin);
@@ -28,7 +28,7 @@
 //   AdminController.createUser,
 // );
 
-// //! Admin Update
+// //* Admin Update
 // router.patch('/edit-profile/:id', uploadFile(), AdminController.updateAdmin);
 // router.get('/me/:id', auth(ENUM_USER_ROLE.ADMIN), AdminController.myProfile);
 // export const AdminRoutes = router;

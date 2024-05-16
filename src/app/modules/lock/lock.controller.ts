@@ -33,18 +33,8 @@ const rejectLock = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-//!
-// const myLockList = catchAsync(async (req: Request, res: Response) => {
-//   const result = await LockService.myLockList(req.user as IReqUser, req.query);
-//   sendResponse(res, {
-//     statusCode: 200,
-//     success: true,
-//     message: 'Lock Request Successful',
-//     data: result.data,
-//     meta: result.meta,
-//   });
-// });
-//!
+
+//*
 const myLockList = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, ['searchTerm', 'status']);
   const paginationOptions = pick(req.query, paginationFields);

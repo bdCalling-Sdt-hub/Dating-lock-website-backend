@@ -6,7 +6,7 @@ import { IPost } from './post.interface';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { IReqUser } from '../user/user.interface';
 
-//! Add a post
+//* Add a post
 const createPost = async (req: Request) => {
   const { files } = req;
   const data = req.body;
@@ -28,7 +28,7 @@ const createPost = async (req: Request) => {
   });
   return result;
 };
-//! Get my posts
+//* Get my posts
 const getMyPosts = async (user: IReqUser, query: Record<string, unknown>) => {
   const postQuery = new QueryBuilder(Post.find({ user: user?.userId }), query)
     .search(['title'])
@@ -45,7 +45,7 @@ const getMyPosts = async (user: IReqUser, query: Record<string, unknown>) => {
     data: result,
   };
 };
-//! Single Post
+//* Single Post
 const singlePost = async (id: string) => {
   const result = await Post.findById(id);
   if (!result) {
@@ -53,7 +53,7 @@ const singlePost = async (id: string) => {
   }
   return result;
 };
-//! Delete Post
+//* Delete Post
 const deletePost = async (id: string) => {
   const result = await Post.findById(id);
   if (!result) {
@@ -61,7 +61,7 @@ const deletePost = async (id: string) => {
   }
   return await Post.findByIdAndDelete(id);
 };
-//! Update post
+//* Update post
 const updatePost = async (id: string, req: Request) => {
   const { files } = req;
   const data = req?.body;

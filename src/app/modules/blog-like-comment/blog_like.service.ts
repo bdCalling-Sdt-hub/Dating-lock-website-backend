@@ -4,7 +4,7 @@ import Blog from '../blog/blog.model';
 import { IReqUser } from '../user/user.interface';
 import ApiError from '../../../errors/ApiError';
 
-//! Controller function to add a like to a blog post
+//* Controller function to add a like to a blog post
 async function addLike(req: Request) {
   const { postId } = req.body;
 
@@ -33,7 +33,7 @@ async function addLike(req: Request) {
 
   return blogPost;
 }
-//! Controller function to add a comment to a blog post
+//* Controller function to add a comment to a blog post
 async function addComment(req: Request) {
   const { postId, content } = req.body;
 
@@ -50,7 +50,7 @@ async function addComment(req: Request) {
   await blogPost.save();
   return blogPost;
 }
-//! Controller function to delete a comment from a blog post
+//* Controller function to delete a comment from a blog post
 async function deleteComment(req: Request) {
   const { postId, commentId } = req.params;
   const blogPost = await Blog.findById(postId);
@@ -70,7 +70,7 @@ async function deleteComment(req: Request) {
   await blogPost.save();
   return blogPost;
 }
-//! Controller function to delete a like from a blog post
+//* Controller function to delete a like from a blog post
 async function removeLike(req: Request) {
   const { postId, likeId } = req.params;
 

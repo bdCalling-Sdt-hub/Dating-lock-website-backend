@@ -7,7 +7,7 @@ import Admin from '../admin/admin.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { IEvent } from './events.interface';
 
-//!
+//*
 const addEvent = async (user: IReqUser, req: Request) => {
   const eventData = req.body;
   //@ts-ignore
@@ -35,7 +35,7 @@ const addEvent = async (user: IReqUser, req: Request) => {
   const result = (await Event.create(data)).populate('hosted_by');
   return result;
 };
-//!
+//*
 const getEvents = async (query: Record<string, unknown>) => {
   const EventQuery = new QueryBuilder(Event.find({}), query)
     .search(['title', 'description'])
@@ -52,7 +52,7 @@ const getEvents = async (query: Record<string, unknown>) => {
     data: result,
   };
 };
-//!
+//*
 const getSingleEvent = async (id: string) => {
   const isExists = await Event.findById(id);
   if (!isExists) {
@@ -60,7 +60,7 @@ const getSingleEvent = async (id: string) => {
   }
   return isExists;
 };
-//!
+//*
 const deleteEvent = async (id: string) => {
   const isExists = await Event.findById(id);
   if (!isExists) {
@@ -68,7 +68,7 @@ const deleteEvent = async (id: string) => {
   }
   return await Event.findByIdAndDelete(id);
 };
-//!
+//*
 const updateEvent = async (id: string, req: Request) => {
   const { files } = req;
   const data = req?.body?.data;
@@ -130,7 +130,7 @@ const updateEvent = async (id: string, req: Request) => {
     return result;
   }
 };
-//!
+//*
 const joinEvents = async (req: Request) => {
   const { eventId } = req.body;
 
@@ -158,7 +158,7 @@ const joinEvents = async (req: Request) => {
 
   return eventPost;
 };
-//!
+//*
 const removeFromEvent = async (req: Request) => {
   const { eventId, userId } = req.params;
 

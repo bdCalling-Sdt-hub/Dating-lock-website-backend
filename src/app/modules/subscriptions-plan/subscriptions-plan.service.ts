@@ -9,7 +9,7 @@ import {
 import { SubscriptionPlan } from './subscriptions-plan.model';
 // const stripe = new stripePackage('your_stripe_secret_key');
 
-//! Admin Management Start
+//* Admin Management Start
 const addSubscription = async (payload: ISubscriptionPlan) => {
   const checkIsExist = await SubscriptionPlan.findOne({ title: payload.title });
   if (checkIsExist) {
@@ -103,9 +103,9 @@ const deleteSubscriptions = async (id: string) => {
   }
   return await SubscriptionPlan.findByIdAndDelete(id);
 };
-//! Admin Management End
+//* Admin Management End
 
-//! Buy Subscription Plan for user
+//* Buy Subscription Plan for user
 // const upgradeSubscriptionPlan = async (
 //   user: IReqUser,
 //   payload: { planId: string },
@@ -140,7 +140,7 @@ const deleteSubscriptions = async (id: string) => {
 //     };
 //   }
 // };
-//!
+//*
 
 export const SubscriptionsPlanService = {
   addSubscription,

@@ -6,7 +6,7 @@ import User from '../user/user.model';
 import ApiError from '../../../errors/ApiError';
 import { io } from '../../../socket/socket';
 
-//! One to one conversation
+//* One to one conversation
 const sendMessage = async (req: Request) => {
   try {
     // const { message } = req.body;
@@ -67,7 +67,7 @@ const sendMessage = async (req: Request) => {
     console.log('Error in sendMessage controller: ', error?.message);
   }
 };
-//!
+//*
 const sendGroupMessage = async (req: Request) => {
   try {
     const { message } = req.body;
@@ -112,7 +112,7 @@ const sendGroupMessage = async (req: Request) => {
     throw new ApiError(500, 'Internal Server Error');
   }
 };
-//! Group conversation
+//* Group conversation
 const createGroupChat = async (req: Request) => {
   try {
     const { groupName, participants } = req.body;
@@ -141,7 +141,7 @@ const createGroupChat = async (req: Request) => {
     throw new ApiError(500, error.message);
   }
 };
-//! Join Group
+//* Join Group
 const joinGroup = async (req: Request, id: string) => {
   const userId = req?.user?.userId;
   const findGroup = await Conversation.findOne({
@@ -170,7 +170,7 @@ const joinGroup = async (req: Request, id: string) => {
   io.emit('joinChat', id);
   return findGroup;
 };
-//!
+//*
 const getMessages = async (req: Request, res: Response) => {
   try {
     const { id: conversationId } = req.params;
@@ -194,7 +194,7 @@ const getMessages = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
-//!
+//*
 const getGroupMessages = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

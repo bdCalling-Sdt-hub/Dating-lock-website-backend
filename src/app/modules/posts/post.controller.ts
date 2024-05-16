@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import catchAsync from '../../../shared/catchasync';
 import { PostService } from './post.service';
 import sendResponse from '../../../shared/sendResponse';
+import { IReqUser } from '../user/user.interface';
 
 const createPost = catchAsync(async (req: Request, res: Response) => {
   const result = await PostService.createPost(req);
@@ -13,7 +14,7 @@ const createPost = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getMyPosts = catchAsync(async (req: Request, res: Response) => {
-  const result = await PostService.getMyPosts(req.user, req.query);
+  const result = await PostService.getMyPosts(req.user as IReqUser, req.query);
 
   sendResponse(res, {
     statusCode: 200,
