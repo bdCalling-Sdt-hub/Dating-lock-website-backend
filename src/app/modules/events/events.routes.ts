@@ -27,6 +27,8 @@ router.get(
 router.patch(
   '/edit/:id',
   auth(ENUM_USER_ROLE.ADMIN),
+  uploadFile(),
+  validateRequest(EventValidation.update),
   EventController.updateEvent,
 );
 router.delete(

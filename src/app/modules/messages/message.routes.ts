@@ -3,6 +3,8 @@ import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import { messageController } from './message.controller';
 import { uploadFile } from '../../middlewares/fileUploader';
+import { validateRequest } from '../../middlewares/validateRequest';
+import { MessageValidation } from './messages.validation';
 
 // import { configureFileUpload } from '../../../utils/multer';
 
@@ -20,8 +22,8 @@ router.post(
 router.post(
   '/send-message/:id', //here id is receiver id
   uploadFile(),
-
   auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
+  validateRequest(MessageValidation.messages),
   messageController.sendMessage,
 );
 router.post(

@@ -41,7 +41,27 @@ const post = z.object({
       .nonempty({ message: 'Image array cannot be empty' }),
   }),
 });
+const update = z.object({
+  body: z.object({
+    title: z.string({}).optional(),
+    description: z.string({}).optional(),
+    start_date: z.string({}).optional(),
+    end_date: z.string({}).optional(),
+    event_type: z.string({}).optional(),
 
+    location: z.string({}).optional(),
+    category: z.string({}).optional(),
+  }),
+  files: z.object({
+    image: z.array(
+      z
+        .object({})
+        .refine(() => true, {})
+        .optional(),
+    ),
+  }),
+});
 export const EventValidation = {
   post,
+  update,
 };

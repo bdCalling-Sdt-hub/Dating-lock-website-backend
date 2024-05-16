@@ -54,6 +54,7 @@ router.patch(
   '/edit/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   uploadFile(),
+  validateRequest(BlogValidation.update),
   BlogController.updateBlog,
 );
 

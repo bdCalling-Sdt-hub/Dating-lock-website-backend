@@ -2,11 +2,6 @@ import { z } from 'zod';
 
 const post = z.object({
   body: z.object({
-    // created_by: z
-    //   .string({
-    //     required_error: 'created_by ID is required',
-    //   })
-    //   .nonempty(),
     title: z
       .string({
         required_error: 'Title is required',
@@ -31,7 +26,23 @@ const post = z.object({
       .nonempty({ message: 'Image array cannot be empty' }),
   }),
 });
+const update = z.object({
+  body: z.object({
+    title: z.string({}).optional(),
+    description: z.string({}).optional(),
+  }),
+
+  files: z.object({
+    image: z.array(
+      z
+        .object({})
+        .refine(() => true, {})
+        .optional(),
+    ),
+  }),
+});
 
 export const BlogValidation = {
   post,
+  update,
 };

@@ -31,7 +31,15 @@ const post = z.object({
       .nonempty({ message: 'Image array cannot be empty' }),
   }),
 });
+const update = z.object({
+  body: z.object({
+    user: z.string({}),
 
+    title: z.string({}),
+    description: z.string({}),
+  }),
+});
 export const PostValidation = {
   post,
+  update,
 };

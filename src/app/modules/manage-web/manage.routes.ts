@@ -2,26 +2,32 @@ import express from 'express';
 import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import { ManageController } from './manage.controller';
+import { validateRequest } from '../../middlewares/validateRequest';
+import { ManageValidation } from './manage-web.validation';
 const router = express.Router();
 
 router.post(
   '/add-about-us',
   auth(ENUM_USER_ROLE.ADMIN),
+  validateRequest(ManageValidation.post),
   ManageController.addAboutUs,
 );
 router.post(
   '/add-terms-conditions',
   auth(ENUM_USER_ROLE.ADMIN),
+  validateRequest(ManageValidation.post),
   ManageController.addTermsConditions,
 );
 router.post(
   '/add-contact-us',
   auth(ENUM_USER_ROLE.ADMIN),
+  validateRequest(ManageValidation.contactUs),
   ManageController.addContactUs,
 );
 router.post(
   '/add-privacy-policy',
   auth(ENUM_USER_ROLE.ADMIN),
+  validateRequest(ManageValidation.post),
   ManageController.addPrivacyPolicy,
 );
 router.get(

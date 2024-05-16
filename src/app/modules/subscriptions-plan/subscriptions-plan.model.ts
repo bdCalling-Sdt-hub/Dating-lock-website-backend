@@ -28,7 +28,7 @@ const subscriptionsSchema = new Schema<ISubscriptionPlan>(
     },
     duration: {
       type: Number,
-      // required: true,
+      required: true,
     },
     plan_type: {
       type: String,

@@ -7,6 +7,7 @@ import { AdminController } from '../admin/admin.controller';
 import { validateRequest } from '../../middlewares/validateRequest';
 import { AdminValidation } from '../admin/admin.validation';
 import { UserValidation } from '../user/user.validations';
+import { AuthValidation } from './auth.validations';
 
 const router = express.Router();
 //*User
@@ -15,7 +16,11 @@ router.post(
   validateRequest(UserValidation.create),
   UserController.registrationUser,
 );
-router.post('/login', UserController.login);
+router.post(
+  '/login',
+  validateRequest(AuthValidation.loginZodSchema),
+  UserController.login,
+);
 router.post('/refresh-token', UserController.refreshToken);
 router.get(
   '/admin/users',
@@ -54,7 +59,11 @@ router.post(
   validateRequest(AdminValidation.create),
   AdminController.registrationUser,
 );
-router.post('/admin/login', AdminController.login);
+router.post(
+  '/admin/login',
+  validateRequest(AuthValidation.loginZodSchema),
+  AdminController.login,
+);
 router.post('/admin/refresh-token', AdminController.refreshToken);
 router.post('/admin/forgot-password', AdminController.forgotPass);
 router.post('/admin/reset-password', AdminController.resetPassword);

@@ -2,11 +2,14 @@ import express from 'express';
 import auth from '../../middlewares/auth';
 import { SubscriptionsPlanController } from './subscriptions-plan.controller';
 import { ENUM_USER_ROLE } from '../../../enums/user';
+import { validateRequest } from '../../middlewares/validateRequest';
+import { SubscriptionPlanValidation } from './subplan.validation';
 const router = express.Router();
 
 router.post(
   '/add',
   auth(ENUM_USER_ROLE.ADMIN),
+  validateRequest(SubscriptionPlanValidation.post),
   SubscriptionsPlanController.adSubscriptions,
 );
 
@@ -33,6 +36,7 @@ router.delete(
 router.patch(
   '/update/:id',
   auth(ENUM_USER_ROLE.ADMIN),
+  validateRequest(SubscriptionPlanValidation.update),
   SubscriptionsPlanController.updateSubscriptionsTitle,
 );
 router.patch(

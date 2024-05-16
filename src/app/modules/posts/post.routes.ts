@@ -30,6 +30,7 @@ router.patch(
   '/edit-post/:id',
   auth(ENUM_USER_ROLE.USER),
   uploadFile(),
+  validateRequest(PostValidation.update),
   PostController.updatePost,
 );
 
