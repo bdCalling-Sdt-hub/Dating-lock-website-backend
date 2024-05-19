@@ -2,11 +2,14 @@ import express from 'express';
 import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import { LockController } from './lock.controller';
+import { validateRequest } from '../../middlewares/validateRequest';
+import { LockValidation } from './lock.validations';
 const router = express.Router();
 
 router.post(
   '/send-request',
   auth(ENUM_USER_ROLE.USER),
+  validateRequest(LockValidation.post),
   LockController.requestLock,
 );
 router.patch(

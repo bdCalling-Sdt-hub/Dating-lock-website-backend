@@ -38,10 +38,12 @@ const rejectLock = catchAsync(async (req: Request, res: Response) => {
 const myLockList = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, ['searchTerm', 'status']);
   const paginationOptions = pick(req.query, paginationFields);
+  const fields = req.query.fields as string;
   const result = await LockService.myLockList(
     req.user as IReqUser,
     filters,
     paginationOptions,
+    fields,
   );
   sendResponse(res, {
     statusCode: 200,

@@ -11,7 +11,6 @@ const auth =
     let token;
     if (authorization && authorization.startsWith('Bearer')) {
       try {
-        //get authorization token
         token = authorization.split(' ')[1];
         if (!token) {
           throw new ApiError(401, 'You are not authorized for this role');

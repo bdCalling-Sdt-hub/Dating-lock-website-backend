@@ -26,12 +26,10 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/uploads', express.static('uploads'));
-// app.use('/public', express.static(path.join(__dirname, 'public')));
 
 //All Routes
 app.use('/', routes);
 
-// app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 app.get('/', async (req: Request, res: Response) => {
   res.json('Welcome to bdCalling');
 });

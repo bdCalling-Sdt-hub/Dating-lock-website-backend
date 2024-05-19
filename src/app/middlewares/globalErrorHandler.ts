@@ -5,13 +5,13 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import { Error } from 'mongoose';
 import config from '../../config';
-
 import handleValidationError from '../../errors/handleValidationError';
 import IGenericErrorMessage from '../../interfaces/error';
 import { ZodError } from 'zod';
 import { handleZodError } from '../../errors/handleZodError';
 import { handleCastError } from '../../errors/handleCastError';
 import ApiError from '../../errors/ApiError';
+import { logger } from '../../shared/logger';
 
 const globalErrorHandler: ErrorRequestHandler = (
   error,
@@ -20,8 +20,8 @@ const globalErrorHandler: ErrorRequestHandler = (
   next: NextFunction,
 ) => {
   config.env === 'development'
-    ? console.log('globalErrorHandler', error)
-    : console.error('globalErrorHandler', error);
+    ? logger.error('globalErrorHandler', error)
+    : logger.error('globalErrorHandler', error);
 
   let statusCode = 500;
   let message = 'Something went wrong !';

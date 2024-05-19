@@ -142,6 +142,7 @@ const myLockList = async (
   user: IReqUser,
   filters: any,
   paginationOptions: IPaginationOptions,
+  fields: any,
 ) => {
   const { searchTerm, ...filtersData } = filters;
   const { page, limit, skip, sortBy, sortOrder } =
@@ -180,6 +181,13 @@ const myLockList = async (
       { fromUser: user.userId, status: 'accepted' },
     ],
   });
+  // Create the projection object from the fields parameter
+  const projection: { [key: string]: 1 } = {};
+  if (fields) {
+    fields.split(',').forEach((field: string) => {
+      projection[field.trim()] = 1;
+    });
+  }
   const sortConditions: { [key: string]: SortOrder } = {};
 
   if (sortBy && sortOrder) {
@@ -189,6 +197,7 @@ const myLockList = async (
     andConditions.length > 0 ? { $and: andConditions } : {};
 
   const result = await Lock.find(whereConditions)
+    .select(projection)
     .populate([
       {
         path: 'fromUser',
