@@ -11,6 +11,7 @@ import { FeedbackRoutes } from '../modules/feedback/feedback.routes';
 import { MessageRoutes } from '../modules/messages/message.routes';
 import { SubscriptionRoutes } from '../modules/subscriptions/subscriptions.routes';
 import { AuthRoutes } from '../modules/auth/auth.routes';
+import { PaymentRoutes } from '../modules/payment/payment.routes';
 
 const router = express.Router();
 
@@ -27,10 +28,10 @@ const moduleRoutes = [
     path: '/blog',
     route: BlogRoutes,
   },
-  // {
-  //   path: '/admin',
-  //   route: AdminRoutes,
-  // },
+  {
+    path: '/payment',
+    route: PaymentRoutes,
+  },
   {
     path: '/manage',
     route: ManageRoutes,
